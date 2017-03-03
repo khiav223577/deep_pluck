@@ -13,12 +13,21 @@ ActiveRecord::Schema.define do
     t.string :name
     t.string :title
   end
+  create_table :contacts, :force => true do |t|
+    t.integer :user_id
+    t.string :address
+    t.string :phone_number
+  end
 end
 class User < ActiveRecord::Base
   serialize :serialized_attribute, Hash
   has_many :posts
+  has_one :contact
 end
 class Post < ActiveRecord::Base
+  belongs_to :user
+end
+class Contact < ActiveRecord::Base
   belongs_to :user
 end
 users = User.create([
@@ -35,4 +44,9 @@ Post.create([
   {:name => 'post4', :title => "Pearl's post1", :user_id => users[1].id},
   {:name => 'post5', :title => "Pearl's post2", :user_id => users[1].id},
   {:name => 'post6', :title => "Kathenrie's post1", :user_id => users[2].id},
+])
+Contact.create([
+  {:address => "John's Home", :phone_number => "0911666888", :user_id => users[0].id},
+  {:address => "Pearl's Home", :phone_number => "1011-0404-934", :user_id => users[1].id},
+  {:address => "Kathenrie's Home", :phone_number => "02-254421", :user_id => users[2].id},
 ])
