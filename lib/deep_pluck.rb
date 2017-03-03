@@ -3,9 +3,9 @@ require 'active_record'
 require 'pluck_all'
 
 class ActiveRecord::Relation
-	def deep_pluck(*args)
-		pluck_all(*args)
-	end
+  def deep_pluck(*args)
+    pluck_all(*args)
+  end
 end
 
 class ActiveRecord::Base
