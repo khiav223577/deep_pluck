@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in pluck_all.gemspec
 
 gem "activerecord", "~> 5.0"
+gem "pluck_all", "~> 1.2.1"
 
 group :test do
   gem "simplecov"
