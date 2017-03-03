@@ -5,7 +5,7 @@ require 'pluck_all'
 
 class ActiveRecord::Relation
   def deep_pluck(*args)
-    DeepPluck::Model.new(self, args).load_all
+    DeepPluck::Model.new(self).add(args).load_all
   end
 end
 
