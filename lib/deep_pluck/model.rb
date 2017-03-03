@@ -1,32 +1,23 @@
 module DeepPluck
   class Model
-  	attr_reader :need_columns
+	#---------------------------------------
+	#  Initialize
+	#---------------------------------------
   	def initialize(relation)
   		@relation = relation
   		@need_columns = []
   		@associations = {}
   	end
-  	def add(args)
-  		return self if args == nil
-  		args = [args] if not args.is_a?(Array)
-  		args.each do |arg|
-	      case arg
-	      when Hash ; add_association(arg)
-	      else      ; add_need_column(arg)
-	      end
-	    end
-	    return self
-  	end
-  	def reflect_on_association(association)
+  #---------------------------------------
+	#  Reader
+	#---------------------------------------
+  	attr_reader :need_columns
+		def reflect_on_association(association)
   		@relation.klass.reflect_on_association(association)
   	end
-  	def load_all
-  		data = @relation.pluck_all(*@need_columns)
-	    @associations.each do |key, association|
-	      set_includes_data(data, key, association.need_columns)
-	    end
-	    return data
-  	end
+	#---------------------------------------
+	#  Contruction OPs
+	#---------------------------------------
 	private
   	def add_need_column(column)
   		@need_columns << column
@@ -37,9 +28,22 @@ module DeepPluck
 				model.add(value)
   		end
   	end
+	public
+		def add(args)
+  		return self if args == nil
+  		args = [args] if not args.is_a?(Array)
+  		args.each do |arg|
+	      case arg
+	      when Hash ; add_association(arg)
+	      else      ; add_need_column(arg)
+	      end
+	    end
+	    return self
+  	end
+  #---------------------------------------
+	#  Load
 	#---------------------------------------
-	#  includes
-	#---------------------------------------
+	private
 		def set_includes_data(parent, children_store_name, selections, order_by = nil)
 	    reflect = reflect_on_association(children_store_name)
 	    if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
@@ -62,5 +66,13 @@ module DeepPluck
 	      return children
 	    end
 	  end
+  public
+  	def load_all
+  		data = @relation.pluck_all(*@need_columns)
+	    @associations.each do |key, association|
+	      set_includes_data(data, key, association.need_columns)
+	    end
+	    return data
+  	end
   end
 end
