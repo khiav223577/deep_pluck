@@ -1,0 +1,20 @@
+language: ruby
+rvm:
+  - 2.2
+  - 2.3
+sudo: required
+dist: trusty
+before_install: 
+  - gem install bundler
+  - gem update --system
+  - gem --version
+gemfile:
+  - gemfiles/3.2.gemfile
+  - gemfiles/4.2.gemfile
+  - gemfiles/5.0.gemfile
+addons:
+    code_climate:
+        repo_token: 29e69e7da6b55678f27b7de2444b6161a6c98e3c4b22e0e017ebab87ada18fd5
+after_success:
+  - bundle exec codeclimate-test-reporter
+
