@@ -1,0 +1,14 @@
+source 'https://rubygems.org'
+
+# Specify your gem's dependencies in pluck_all.gemspec
+
+gem "activerecord", "~> 4.2"
+
+group :test do
+  gem "simplecov"
+  gem "codeclimate-test-reporter", "~> 1.0.0"
+  gem 'carrierwave', '~> 0.11.0'
+end
+
+gemspec :path => "../"
+
