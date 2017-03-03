@@ -15,13 +15,14 @@ class ActiveRecord::Relation
     data = pluck_all(*current_level_columns)
     should_delete_id = (data.first.size == current_level_columns.size)
     next_level_hash.each do |key, select_columns|
-      deep_pluck_includes_data(data, :user_id, key, Post, select_columns)
+      deep_pluck_includes_data(data, :user_id, key, select_columns)
     end
     data.each{|s| s.delete('id')} if should_delete_id
     return data
   end
 private
-  def deep_pluck_includes_data(parent, associate_column_name, children_store_name, child_class, selections, reverse = false, order_by = nil)
+  def deep_pluck_includes_data(parent, associate_column_name, children_store_name, selections, reverse = false, order_by = nil)
+    child_class = klass.reflect_on_association(children_store_name).klass
     associate_column_name = associate_column_name.to_s
     if reverse #Child.where(:id => parent.pluck(:child_id))
       children = child_class.where(:id => parent.map{|s| s[associate_column_name]}.uniq.compact).order(order_by).pluck_all(*selections)
