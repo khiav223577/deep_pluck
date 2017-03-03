@@ -4,7 +4,15 @@ require 'pluck_all'
 
 class ActiveRecord::Relation
   def deep_pluck(*args)
-    pluck_all(*args)
+    next_level_hash = {}
+    current_level_columns = []
+    args.each do |arg|
+      case arg
+      when Hash ; next_level_hash.deep_merge!(arg)
+      else      ; current_level_columns << arg
+      end
+    end
+    return pluck_all(*current_level_columns)
   end
 end
 
