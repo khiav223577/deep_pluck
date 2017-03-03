@@ -18,8 +18,8 @@ class DeepPluckTest < Minitest::Test
 
   def test_pluck_with_2_level_deep
     assert_equal [
-      {'name' => 'John'},
-      {'name' => 'Pearl'},
-    ], User.where(:name => %w(John Pearl)).includes(:posts).deep_pluck(:name, :posts => [:name])
+      {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}]},
+      {'name' => 'Kathenrie', :posts => [{'name' => "post6"}]},
+    ], User.where(:name => %w(Pearl Kathenrie)).includes(:posts).deep_pluck(:name, :posts => [:name])
   end
 end
