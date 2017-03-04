@@ -13,8 +13,6 @@ module DeepPluck
   #---------------------------------------
 	#  Reader
 	#---------------------------------------
-  	attr_reader :need_columns
-  	attr_reader :relation
 		def reflect_on_association(association_key)
   		@relation.klass.reflect_on_association(association_key)
   	end
@@ -53,7 +51,6 @@ module DeepPluck
 	#---------------------------------------
 	private
 		def set_includes_data(parent, children_store_name, model, order_by = nil)
-			selections = model.need_columns
 	    reflect = reflect_on_association(children_store_name)
 	    if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
 	      children = model.load_data{|relaction| relaction.where(:id => parent.map{|s| s[reflect.foreign_key]}.uniq.compact).order(order_by) }
