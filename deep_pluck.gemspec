@@ -33,5 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "minitest", "~> 5.0"
 
   spec.add_dependency "rails", ">= 3"
+  spec.add_dependency "pluck_all", "~> 1.2.1"
 
 end
