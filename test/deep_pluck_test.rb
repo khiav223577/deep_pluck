@@ -27,10 +27,10 @@ class DeepPluckTest < Minitest::Test
     ], User.where(:name => %w(John Pearl)).deep_pluck(:name, :contact => [:address])
   end
 
-  def test_pluck_with_2_level_deep_and_reverse_association
-    assert_equal [
-      {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}]},
-      {'name' => 'Kathenrie', :posts => [{'name' => "post6"}]},
-    ], Post.where(:name => %w(post4 post5 post6)).deep_pluck(:name, :user => [:name])
-  end
+  # def test_pluck_with_2_level_deep_and_reverse_association
+  #   assert_equal [
+  #     {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}]},
+  #     {'name' => 'Kathenrie', :posts => [{'name' => "post6"}]},
+  #   ], Post.where(:name => %w(post4 post5 post6)).deep_pluck(:name, :user => [:name])
+  # end
 end

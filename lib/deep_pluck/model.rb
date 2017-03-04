@@ -28,7 +28,7 @@ module DeepPluck
 	#---------------------------------------
 	private
   	def add_need_column(column)
-  		@need_columns << column
+  		@need_columns << column.to_s
   	end
   	def add_association(hash)
   		hash.each do |key, value|
@@ -62,32 +62,37 @@ module DeepPluck
 	        next if (id = s[reflect.foreign_key]) == nil
 	        s[children_store_name] = children_hash[id]
 	      }
-	      return children
 	    else       #Child.where(:parent_id => parent.pluck(:id))
 	      parent.each{|s| s[children_store_name] = [] }
 	      parent_hash = Hash[parent.map{|s| [s["id"], s]}]
 	      children = model.load_data{|relaction| relaction.where(reflect.foreign_key => parent.map{|s| s["id"]}.uniq.compact).order(order_by) }
 	      children.each{|s|
 	        next if (id = s[reflect.foreign_key]) == nil
-	        # s.delete(reflect.foreign_key) if s.size != selections.size
 	        parent_hash[id][children_store_name] << s
 	      }
-	      return children
 	    end
+      return children
 	  end
   public
   	def load_data
   		prev_need_columns = @parent_model.get_foreign_key(@parent_association_key, true) if @parent_model
   		next_need_columns = @associations.map{|key, _| get_foreign_key(key) }.uniq
+  		all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq
+  		@extra_columns = all_need_columns - @need_columns
 			@relation = yield(@relation) if block_given?
-  		return @relation.pluck_all(*prev_need_columns, *next_need_columns, *@need_columns)
+  		return (@data = @relation.pluck_all(*all_need_columns))
   	end
   	def load_all
   		data = load_data
 	    @associations.each do |key, model|
 	      set_includes_data(data, key, model)
 	    end
+	    delete_extra_column_data!
 	    return data
+  	end
+  	def delete_extra_column_data!
+  		@data.each{|s| s.except!(*@extra_columns) } if @data
+  		@associations.each{|_, model| model.delete_extra_column_data! }
   	end
   end
 end
