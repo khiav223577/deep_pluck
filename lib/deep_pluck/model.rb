@@ -3,8 +3,10 @@ module DeepPluck
 	#---------------------------------------
 	#  Initialize
 	#---------------------------------------
-  	def initialize(relation)
+  	def initialize(relation, parent_association_key = nil, parent_model = nil)
   		@relation = relation
+  		@parent_association_key = parent_association_key
+  		@parent_model = parent_model
   		@need_columns = []
   		@associations = {}
   	end
@@ -12,8 +14,14 @@ module DeepPluck
 	#  Reader
 	#---------------------------------------
   	attr_reader :need_columns
-		def reflect_on_association(association)
-  		@relation.klass.reflect_on_association(association)
+  	attr_reader :relation
+		def reflect_on_association(association_key)
+  		@relation.klass.reflect_on_association(association_key)
+  	end
+  	def get_foreign_key(association_key, reverse = false)
+  		reflect = reflect_on_association(association_key)
+  		return (reflect.belongs_to? ? 'id' : reflect.foreign_key) if reverse
+  		return (reflect.belongs_to? ? reflect.foreign_key : 'id')
   	end
 	#---------------------------------------
 	#  Contruction OPs
@@ -24,7 +32,7 @@ module DeepPluck
   	end
   	def add_association(hash)
   		hash.each do |key, value|
-  			model = (@associations[key] ||= Model.new(reflect_on_association(key).klass))
+  			model = (@associations[key] ||= Model.new(reflect_on_association(key).klass.where(''), key, self))
 				model.add(value)
   		end
   	end
@@ -44,10 +52,11 @@ module DeepPluck
 	#  Load
 	#---------------------------------------
 	private
-		def set_includes_data(parent, children_store_name, selections, order_by = nil)
+		def set_includes_data(parent, children_store_name, model, order_by = nil)
+			selections = model.need_columns
 	    reflect = reflect_on_association(children_store_name)
 	    if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
-	      children = reflect.klass.where(:id => parent.map{|s| s[reflect.foreign_key]}.uniq.compact).order(order_by).pluck_all(*selections)
+	      children = model.load_data{|relaction| relaction.where(:id => parent.map{|s| s[reflect.foreign_key]}.uniq.compact).order(order_by) }
 	      children_hash = Hash[children.map{|s| [s["id"], s]}]
 	      parent.each{|s|
 	        next if (id = s[reflect.foreign_key]) == nil
@@ -57,7 +66,7 @@ module DeepPluck
 	    else       #Child.where(:parent_id => parent.pluck(:id))
 	      parent.each{|s| s[children_store_name] = [] }
 	      parent_hash = Hash[parent.map{|s| [s["id"], s]}]
-	      children = reflect.klass.where(reflect.foreign_key => parent.map{|s| s["id"]}.uniq.compact).order(order_by).pluck_all(reflect.foreign_key, *selections)
+	      children = model.load_data{|relaction| relaction.where(reflect.foreign_key => parent.map{|s| s["id"]}.uniq.compact).order(order_by) }
 	      children.each{|s|
 	        next if (id = s[reflect.foreign_key]) == nil
 	        # s.delete(reflect.foreign_key) if s.size != selections.size
@@ -67,10 +76,16 @@ module DeepPluck
 	    end
 	  end
   public
+  	def load_data
+  		prev_need_columns = @parent_model.get_foreign_key(@parent_association_key, true) if @parent_model
+  		next_need_columns = @associations.map{|key, _| get_foreign_key(key) }.uniq
+			@relation = yield(@relation) if block_given?
+  		return @relation.pluck_all(*prev_need_columns, *next_need_columns, *@need_columns)
+  	end
   	def load_all
-  		data = @relation.pluck_all(*@need_columns)
-	    @associations.each do |key, association|
-	      set_includes_data(data, key, association.need_columns)
+  		data = load_data
+	    @associations.each do |key, model|
+	      set_includes_data(data, key, model)
 	    end
 	    return data
   	end
