@@ -60,15 +60,15 @@ module DeepPluck
           s[children_store_name] = children_hash[id]
         }
       else       #Child.where(:parent_id => parent.pluck(:id))
-        parent.each{|s| s[children_store_name] = [] } if !reflect.has_one?
+        parent.each{|s| s[children_store_name] = [] } if reflect.collection?
         parent_hash = Hash[parent.map{|s| [s["id"], s]}]
         children = model.load_data{|relaction| relaction.where(reflect.foreign_key => parent.map{|s| s["id"]}.uniq.compact).order(order_by) }
         children.each{|s|
           next if (id = s[reflect.foreign_key]) == nil
-          if reflect.has_one?
-            parent_hash[id][children_store_name] = s
-          else
+          if reflect.collection?
             parent_hash[id][children_store_name] << s
+          else
+            parent_hash[id][children_store_name] = s
           end
         }
       end
