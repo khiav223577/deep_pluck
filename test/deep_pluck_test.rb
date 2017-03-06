@@ -54,15 +54,15 @@ class DeepPluckTest < Minitest::Test
       :root => false,
       :only => [:name, :email], 
       :include => {
-        :posts => {
+        'posts' => {
           :only => :name, 
           :include => {
-            :post_comments => {
+            'post_comments' => {
               :only => :comment,
             },
           },
         },
-        :contact => {
+        'contact' => {
           :only => :address,
         },
       },
