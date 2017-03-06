@@ -81,15 +81,16 @@ module DeepPluck
       all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq
       @extra_columns = all_need_columns - @need_columns
       @relation = yield(@relation) if block_given?
-      return (@data = @relation.pluck_all(*all_need_columns))
+      @data = @relation.pluck_all(*all_need_columns)
+      @associations.each do |key, model|
+        set_includes_data(@data, key, model)
+      end
+      return @data
     end
     def load_all
-      data = load_data
-      @associations.each do |key, model|
-        set_includes_data(data, key, model)
-      end
+      load_data
       delete_extra_column_data!
-      return data
+      return @data
     end
     def delete_extra_column_data!
       @data.each{|s| s.except!(*@extra_columns) } if @data

@@ -57,7 +57,7 @@ PostComment.create([
   {:post_id => posts[2].id, :comment => "WTF?"},
   {:post_id => posts[2].id, :comment => "..."},
   {:post_id => posts[3].id, :comment => "cool!"},
-  {:post_id => posts[4].id, :comment => "hahahahahahha"},
+  {:post_id => posts[5].id, :comment => "hahahahahahha"},
 ])
 Contact.create([
   {:address => "John's Home", :phone_number => "0911666888", :user_id => users[0].id},
