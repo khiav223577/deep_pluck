@@ -9,14 +9,14 @@ class DeepPluckTest < Minitest::Test
     refute_nil ::DeepPluck::VERSION
   end
   
-  def test_pluck_with_1_level_deep
+  def test_1_level_deep
     assert_equal [
       {'name' => 'John'},
       {'name' => 'Pearl'},
     ], User.where(:name => %w(John Pearl)).deep_pluck(:name)
   end
 
-  def test_pluck_with_2_level_deep
+  def test_2_level_deep
     assert_equal [
       {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}]},
       {'name' => 'Kathenrie', :posts => [{'name' => "post6"}]},
@@ -27,7 +27,14 @@ class DeepPluckTest < Minitest::Test
     ], User.where(:name => %w(John Pearl)).deep_pluck(:name, :contact => [:address])
   end
 
-  def test_pluck_with_2_level_deep_and_reverse_association
+  def test_two_associations
+    assert_equal [
+      {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}], :contact => [{'address' => "Pearl's Home"}]},
+      {'name' => 'Kathenrie', :posts => [{'name' => "post6"}], :contact => [{'address' => "Kathenrie's Home"}]},
+    ], User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :contact => :address, :posts => :name)
+  end
+
+  def test_2_level_deep_and_reverse_association
     assert_equal [
       {'name' => 'post4', :user => {'name' => "Pearl"}},
       {'name' => 'post5', :user => {'name' => "Pearl"}},
