@@ -22,15 +22,15 @@ class DeepPluckTest < Minitest::Test
       {'name' => 'Kathenrie', :posts => [{'name' => "post6"}]},
     ], User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :posts => [:name])
     assert_equal [
-      {'name' => 'John' , :contact => [{'address' => "John's Home"}]},
-      {'name' => 'Pearl', :contact => [{'address' => "Pearl's Home"}]},
-    ], User.where(:name => %w(John Pearl)).deep_pluck(:name, :contact => [:address])
+      {'name' => 'John' , :contact => {'address' => "John's Home"}},
+      {'name' => 'Pearl', :contact => {'address' => "Pearl's Home"}},
+    ], User.where(:name => %w(John Pearl)).deep_pluck(:name, :contact => :address)
   end
 
   def test_two_associations
     assert_equal [
-      {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}], :contact => [{'address' => "Pearl's Home"}]},
-      {'name' => 'Kathenrie', :posts => [{'name' => "post6"}], :contact => [{'address' => "Kathenrie's Home"}]},
+      {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}], :contact => {'address' => "Pearl's Home"}},
+      {'name' => 'Kathenrie', :posts => [{'name' => "post6"}], :contact => {'address' => "Kathenrie's Home"}},
     ], User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :contact => :address, :posts => :name)
   end
 
