@@ -48,4 +48,29 @@ class DeepPluckTest < Minitest::Test
       {'name' => 'post6', :user => {'name' => "Kathenrie"}},
     ], Post.where(:name => %w(post4 post5 post6)).deep_pluck(:name, :user => [:name])
   end
+
+  def test_as_json_equality
+    expected = User.where(:name => %w(Pearl Kathenrie)).as_json({
+      :only => [:name, :email], 
+      :include => {
+        :posts => {
+          :only => :name, 
+          :include => {
+            :post_comments => {
+              :only => :comment,
+            },
+          },
+        },
+        :contact => {
+          :only => :address,
+        },
+      },
+    })
+    assert_equal expected, User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
+      :name, 
+      :email, 
+      'posts' => [:name, 'post_comments' => :comment], 
+      'contact' => :address,
+    )
+  end
 end
