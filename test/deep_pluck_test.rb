@@ -27,6 +27,13 @@ class DeepPluckTest < Minitest::Test
     ], User.where(:name => %w(John Pearl)).deep_pluck(:name, :contact => :address)
   end
 
+  def test_3_level_deep
+    assert_equal [
+      {'name' => 'Pearl'    , :posts => [{'name' => "post4", :post_comments => [{'comment' => 'cool!'}]}, {'name' => "post5", :post_comments => []}]},
+      {'name' => 'Kathenrie', :posts => [{'name' => "post6", :post_comments => [{'comment' => 'hahahahahahha'}]}]},
+    ], User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :posts => [:name, :post_comments => :comment])
+  end
+
   def test_two_associations
     assert_equal [
       {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}], :contact => {'address' => "Pearl's Home"}},
@@ -40,5 +47,31 @@ class DeepPluckTest < Minitest::Test
       {'name' => 'post5', :user => {'name' => "Pearl"}},
       {'name' => 'post6', :user => {'name' => "Kathenrie"}},
     ], Post.where(:name => %w(post4 post5 post6)).deep_pluck(:name, :user => [:name])
+  end
+
+  def test_as_json_equality
+    expected = User.where(:name => %w(Pearl Kathenrie)).as_json({
+      :root => false,
+      :only => [:name, :email], 
+      :include => {
+        'posts' => {
+          :only => :name, 
+          :include => {
+            'post_comments' => {
+              :only => :comment,
+            },
+          },
+        },
+        'contact' => {
+          :only => :address,
+        },
+      },
+    })
+    assert_equal expected, User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
+      :name, 
+      :email, 
+      'posts' => [:name, 'post_comments' => :comment], 
+      'contact' => :address,
+    )
   end
 end

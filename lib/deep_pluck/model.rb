@@ -14,12 +14,12 @@ module DeepPluck
   #  Reader
   #---------------------------------------
     def reflect_on_association(association_key)
-      @relation.klass.reflect_on_association(association_key)
+      @relation.klass.reflect_on_association(association_key.to_sym) #add to_sym since rails 3 only support symbol
     end
     def get_foreign_key(association_key, reverse = false)
       reflect = reflect_on_association(association_key)
-      return (reflect.belongs_to? ? 'id' : reflect.foreign_key) if reverse
-      return (reflect.belongs_to? ? reflect.foreign_key : 'id')
+      return (reflect.belongs_to? ? @relation.klass.primary_key : reflect.foreign_key) if reverse
+      return (reflect.belongs_to? ? reflect.foreign_key : @relation.klass.primary_key)
     end
   #---------------------------------------
   #  Contruction OPs
@@ -81,15 +81,16 @@ module DeepPluck
       all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq
       @extra_columns = all_need_columns - @need_columns
       @relation = yield(@relation) if block_given?
-      return (@data = @relation.pluck_all(*all_need_columns))
+      @data = @relation.pluck_all(*all_need_columns)
+      @associations.each do |key, model|
+        set_includes_data(@data, key, model)
+      end
+      return @data
     end
     def load_all
-      data = load_data
-      @associations.each do |key, model|
-        set_includes_data(data, key, model)
-      end
+      load_data
       delete_extra_column_data!
-      return data
+      return @data
     end
     def delete_extra_column_data!
       @data.each{|s| s.except!(*@extra_columns) } if @data
