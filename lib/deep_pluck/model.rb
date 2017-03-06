@@ -14,7 +14,7 @@ module DeepPluck
   #  Reader
   #---------------------------------------
     def reflect_on_association(association_key)
-      @relation.klass.reflect_on_association(association_key)
+      @relation.klass.reflect_on_association(association_key.to_sym) #add to_sym since rails 3 only support symbol
     end
     def get_foreign_key(association_key, reverse = false)
       reflect = reflect_on_association(association_key)
