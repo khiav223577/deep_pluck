@@ -27,6 +27,13 @@ class DeepPluckTest < Minitest::Test
     ], User.where(:name => %w(John Pearl)).deep_pluck(:name, :contact => :address)
   end
 
+  def test_3_level_deep
+    assert_equal [
+      {'name' => 'Pearl'    , :posts => [{'name' => "post4", :post_comments => [{comment: 'cool!'}]}, {'name' => "post5", :post_comments => []}]},
+      {'name' => 'Kathenrie', :posts => [{'name' => "post6", :post_comments => [{comment: 'hahahahahahha'}]}]},
+    ], User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :posts => [:name, :post_comments => :comment])
+  end
+
   def test_two_associations
     assert_equal [
       {'name' => 'Pearl'    , :posts => [{'name' => "post4"}, {'name' => "post5"}], :contact => {'address' => "Pearl's Home"}},

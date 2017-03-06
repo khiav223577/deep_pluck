@@ -13,6 +13,10 @@ ActiveRecord::Schema.define do
     t.string :name
     t.string :title
   end
+  create_table :post_comments, :force => true do |t|
+    t.integer :post_id
+    t.string :comment
+  end
   create_table :contacts, :force => true do |t|
     t.integer :user_id
     t.string :address
@@ -26,6 +30,10 @@ class User < ActiveRecord::Base
 end
 class Post < ActiveRecord::Base
   belongs_to :user
+  has_many :post_comments
+end
+class PostComment < ActiveRecord::Base
+  belongs_to :post
 end
 class Contact < ActiveRecord::Base
   belongs_to :user
@@ -37,13 +45,19 @@ users = User.create([
 ])
 User.where(:name => 'John').update_all(:profile_pic => 'JohnProfile.jpg') # skip carrierwave
 User.where(:name => 'Kathenrie').update_all(:profile_pic => 'Profile.jpg', :pet_pic => 'Pet.png') # skip carrierwave
-Post.create([
+posts = Post.create([
   {:name => 'post1', :title => "John's post1", :user_id => users[0].id},
   {:name => 'post2', :title => "John's post2", :user_id => users[0].id},
   {:name => 'post3', :title => "John's post3", :user_id => users[0].id},
   {:name => 'post4', :title => "Pearl's post1", :user_id => users[1].id},
   {:name => 'post5', :title => "Pearl's post2", :user_id => users[1].id},
   {:name => 'post6', :title => "Kathenrie's post1", :user_id => users[2].id},
+])
+PostComment.create([
+  {:post_id => posts[2].id, :comment => "WTF?"},
+  {:post_id => posts[2].id, :comment => "..."},
+  {:post_id => posts[3].id, :comment => "cool!"},
+  {:post_id => posts[4].id, :comment => "hahahahahahha"},
 ])
 Contact.create([
   {:address => "John's Home", :phone_number => "0911666888", :user_id => users[0].id},
