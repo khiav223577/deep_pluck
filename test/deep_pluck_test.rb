@@ -9,6 +9,10 @@ class DeepPluckTest < Minitest::Test
     refute_nil ::DeepPluck::VERSION
   end
   
+  def test_with_none
+    assert_equal [], User.where('1=0').deep_pluck(:id, :name) #TODO rails 3 doesn't support none
+  end
+  
   def test_behavior_like_pluck_all_when_1_level_deep
     assert_equal User.pluck_all(:id, :name), User.deep_pluck(:id, :name)
   end
