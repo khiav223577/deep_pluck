@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["khiav reoy"]
   spec.email         = ["mrtmrt15xn@yahoo.com.tw"]
 
-  spec.summary       = %q{}
-  spec.description   = %q{}
+  spec.summary       = %q{Use deep_pluck as a shortcut to select one or more attributes and include associated models without loading a bunch of records.}
+  spec.description   = %q{Use deep_pluck as a shortcut to select one or more attributes and include associated models without loading a bunch of records. And DRY up your code when using #as_json.}
   spec.homepage      = "https://github.com/khiav223577/deep_pluck"
   spec.license       = "MIT"
 
