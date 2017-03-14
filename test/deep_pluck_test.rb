@@ -12,6 +12,7 @@ class DeepPluckTest < Minitest::Test
   def test_with_none
     user_none = (ActiveRecord::Base.respond_to?(:none) ? User.none : User.where('1=0'))
     assert_equal [], user_none.deep_pluck(:id, :name)
+    assert_equal [], user_none.deep_pluck(:id, :name, :posts => [:name])
   end
 
   def test_behavior_like_pluck_all_when_1_level_deep

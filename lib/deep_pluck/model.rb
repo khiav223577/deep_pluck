@@ -79,11 +79,13 @@ module DeepPluck
       prev_need_columns = @parent_model.get_foreign_key(@parent_association_key, true) if @parent_model
       next_need_columns = @associations.map{|key, _| get_foreign_key(key) }.uniq
       all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq
-      @extra_columns = all_need_columns - @need_columns
       @relation = yield(@relation) if block_given?
       @data = @relation.pluck_all(*all_need_columns)
-      @associations.each do |key, model|
-        set_includes_data(@data, key, model)
+      if @data.size != 0
+        @extra_columns = all_need_columns - @need_columns #for delete_extra_column_data!
+        @associations.each do |key, model|
+          set_includes_data(@data, key, model)
+        end
       end
       return @data
     end
@@ -93,7 +95,8 @@ module DeepPluck
       return @data
     end
     def delete_extra_column_data!
-      @data.each{|s| s.except!(*@extra_columns) } if @data
+      return if @data.blank?
+      @data.each{|s| s.except!(*@extra_columns) }
       @associations.each{|_, model| model.delete_extra_column_data! }
     end
   end
