@@ -22,11 +22,20 @@ ActiveRecord::Schema.define do
     t.string :address
     t.string :phone_number
   end
+  create_table :user_achievements, :force => true do |t|
+    t.references :user, index: true
+    t.references :achievement, index: true
+  end
+  create_table :achievements, :force => true do |t|
+    t.string :name
+  end
 end
 class User < ActiveRecord::Base
   serialize :serialized_attribute, Hash
   has_many :posts
   has_one :contact
+  has_many :user_achievements
+  has_many :achievements, :through => :user_achievements
 end
 class Post < ActiveRecord::Base
   belongs_to :user
@@ -38,6 +47,16 @@ end
 class Contact < ActiveRecord::Base
   belongs_to :user
 end
+class UserAchievement < ActiveRecord::Base
+  belongs_to :gamecharacter
+  belongs_to :achievement
+end
+
+class Achievement < ActiveRecord::Base
+  has_many :gc_achievements
+  has_many :users, :through => :user_achievements
+end
+
 users = User.create([
   {:name => 'John', :email => 'john@example.com'},
   {:name => 'Pearl', :email => 'pearl@example.com', :serialized_attribute => {:testing => true, :deep => {:deep => :deep}}},
