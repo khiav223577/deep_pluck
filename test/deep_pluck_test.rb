@@ -59,6 +59,21 @@ class DeepPluckTest < Minitest::Test
     ], Post.where(:name => %w(post4 post5 post6)).deep_pluck(:name, :user => [:name])
   end
 
+  def test_many_to_many
+    expected = [
+      {"name" => "John"     , :achievements => [{"name" => "achievement1"}]}, 
+      {"name" => "Pearl"    , :achievements => [{"name" => "achievement1"}, {"name" => "achievement3"}]}, 
+      {"name" => "Kathenrie", :achievements => []},
+    ]
+    assert_equal expected, User.deep_pluck(:name, :achievements => :name)
+    expected = [
+      {"name" => "achievement1", :users => [{"name" => "John"}, {"name" => "Pearl"}]}, 
+      {"name" => "achievement2", :users => []},
+      {"name" => "achievement3", :users => [{"name" => "Pearl"}]},
+    ]
+    assert_equal expected, Achievement.deep_pluck(:name, :users => :name)
+  end
+
   def test_as_json_equality
     expected = User.where(:name => %w(Pearl Kathenrie)).as_json({
       :root => false,
