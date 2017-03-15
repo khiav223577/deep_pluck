@@ -48,7 +48,7 @@ class Contact < ActiveRecord::Base
   belongs_to :user
 end
 class UserAchievement < ActiveRecord::Base
-  belongs_to :gamecharacter
+  belongs_to :user
   belongs_to :achievement
 end
 
@@ -86,6 +86,7 @@ Contact.create([
 achievements = Achievement.create([
   {:name => 'achievement1'},
   {:name => 'achievement2'},
+  {:name => 'achievement3'},
 ])
 UserAchievement.create([
   {:user_id => users[0].id, :achievement_id => achievements[0].id},

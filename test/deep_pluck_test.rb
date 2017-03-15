@@ -66,6 +66,12 @@ class DeepPluckTest < Minitest::Test
       {"name" => "Kathenrie", :achievements => []},
     ]
     assert_equal expected, User.deep_pluck(:name, :achievements => :name)
+    expected = [
+      {"name" => "achievement1", :users => [{"name" => "John"}, {"name" => "Pearl"}]}, 
+      {"name" => "achievement2", :users => [{"name" => "Pearl"}]},
+      {"name" => "achievement3", :users => []},
+    ]
+    assert_equal expected, Achievement.deep_pluck(:name, :users => :name)
   end
 
   def test_as_json_equality
