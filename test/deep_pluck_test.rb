@@ -62,14 +62,14 @@ class DeepPluckTest < Minitest::Test
   def test_many_to_many
     expected = [
       {"name" => "John"     , :achievements => [{"name" => "achievement1"}]}, 
-      {"name" => "Pearl"    , :achievements => [{"name" => "achievement1"}, {"name" => "achievement2"}]}, 
+      {"name" => "Pearl"    , :achievements => [{"name" => "achievement1"}, {"name" => "achievement3"}]}, 
       {"name" => "Kathenrie", :achievements => []},
     ]
     assert_equal expected, User.deep_pluck(:name, :achievements => :name)
     expected = [
       {"name" => "achievement1", :users => [{"name" => "John"}, {"name" => "Pearl"}]}, 
-      {"name" => "achievement2", :users => [{"name" => "Pearl"}]},
-      {"name" => "achievement3", :users => []},
+      {"name" => "achievement2", :users => []},
+      {"name" => "achievement3", :users => [{"name" => "Pearl"}]},
     ]
     assert_equal expected, Achievement.deep_pluck(:name, :users => :name)
   end

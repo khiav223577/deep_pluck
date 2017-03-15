@@ -91,5 +91,5 @@ achievements = Achievement.create([
 UserAchievement.create([
   {:user_id => users[0].id, :achievement_id => achievements[0].id},
   {:user_id => users[1].id, :achievement_id => achievements[0].id},
-  {:user_id => users[1].id, :achievement_id => achievements[1].id},
+  {:user_id => users[1].id, :achievement_id => achievements[2].id},
 ])
