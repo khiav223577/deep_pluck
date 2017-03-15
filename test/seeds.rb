@@ -83,3 +83,12 @@ Contact.create([
   {:address => "Pearl's Home", :phone_number => "1011-0404-934", :user_id => users[1].id},
   {:address => "Kathenrie's Home", :phone_number => "02-254421", :user_id => users[2].id},
 ])
+achievements = Achievement.create([
+  {:name => 'achievement1'},
+  {:name => 'achievement2'},
+])
+UserAchievement.create([
+  {:user_id => users[0].id, :achievement_id => achievements[0].id},
+  {:user_id => users[1].id, :achievement_id => achievements[0].id},
+  {:user_id => users[1].id, :achievement_id => achievements[1].id},
+])
