@@ -13,11 +13,10 @@ module DeepPluck
   #---------------------------------------
   #  Reader
   #---------------------------------------
-    def reflect_on_association(association_key)
+    def get_reflect(association_key)
       @relation.klass.reflect_on_association(association_key.to_sym) #add to_sym since rails 3 only support symbol
     end
-    def get_foreign_key(association_key, reverse = false)
-      reflect = reflect_on_association(association_key)
+    def get_foreign_key(reflect, reverse = false)
       if reflect.options[:through] and reverse #reverse = parent
         return "#{reflect.options[:through]}.user_id" #TODO
       end
@@ -33,7 +32,7 @@ module DeepPluck
     end
     def add_association(hash)
       hash.each do |key, value|
-        model = (@associations[key] ||= Model.new(reflect_on_association(key).klass.where(''), key, self))
+        model = (@associations[key] ||= Model.new(get_reflect(key).klass.where(''), key, self))
         model.add(value)
       end
     end
@@ -59,18 +58,15 @@ module DeepPluck
         relation_key = 'id'
       else
         parent_key = 'id'
-        if reflect.options[:through]
-          relation = relation.joins(reflect.options[:through])
-          relation_key = "#{reflect.options[:through]}.id"
-        else
-          relation_key = reflect.foreign_key
-        end
+        relation_key = get_foreign_key(reflect, true)
+        relation = relation.joins(reflect.options[:through]) if reflect.options[:through]
       end
+      # p relation.where(relation_key => parent.map{|s| s[parent_key]}.uniq.compact).to_sql
       return relation.where(relation_key => parent.map{|s| s[parent_key]}.uniq.compact)
     end
   private
     def set_includes_data(parent, children_store_name, model)
-      reflect = reflect_on_association(children_store_name)
+      reflect = get_reflect(children_store_name)
       if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
         children_hash = Hash[children.map{|s| [s["id"], s]}]
@@ -100,8 +96,8 @@ module DeepPluck
     end
   public
     def load_data
-      prev_need_columns = @parent_model.get_foreign_key(@parent_association_key, true) if @parent_model
-      next_need_columns = @associations.map{|key, _| get_foreign_key(key) }.uniq
+      prev_need_columns = @parent_model.get_foreign_key(@parent_model.get_reflect(@parent_association_key), true) if @parent_model
+      next_need_columns = @associations.map{|key, _| get_foreign_key(get_reflect(key)) }.uniq
       all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq
       @relation = yield(@relation) if block_given?
       @data = @relation.pluck_all(*all_need_columns)
