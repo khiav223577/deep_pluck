@@ -18,7 +18,7 @@ module DeepPluck
     end
     def get_foreign_key(reflect, reverse = false)
       if reflect.options[:through] and reverse #reverse = parent
-        return "#{reflect.options[:through]}.user_id" #TODO
+        return "#{reflect.options[:through]}.#{reflect.chain.last.foreign_key}"
       end
       return (reflect.belongs_to? ? reflect.active_record.primary_key : reflect.foreign_key) if reverse
       return (reflect.belongs_to? ? reflect.foreign_key : reflect.active_record.primary_key)
@@ -72,14 +72,10 @@ module DeepPluck
           s[children_store_name] = children_hash[id]
         }
       else       #Child.where(:parent_id => parent.pluck(:id))
-        if reflect.options[:through]
-          foreign_key = 'user_id' #TODO
-        else
-          foreign_key = reflect.foreign_key
-        end
         parent.each{|s| s[children_store_name] = [] } if reflect.collection?
         parent_hash = Hash[parent.map{|s| [s["id"], s]}]
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
+        foreign_key = get_foreign_key(reflect, true).sub(/\w+\./, '') #user_achievements.user_id => user_id
         children.each{|s|
           next if (id = s[foreign_key]) == nil
           if reflect.collection?
