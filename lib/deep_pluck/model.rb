@@ -51,12 +51,21 @@ module DeepPluck
   #---------------------------------------
   private
     def do_query(parent, reflect, relation)
-      if reflect.belongs_to?
-        return relation.where(:id => parent.map{|s| s[reflect.foreign_key]}.uniq.compact)
+      if reflect.belongs_to? #A belongs_to association cannot have a :through option
+        parent_key = reflect.foreign_key
+        relation_key = 'id'
       else
-        return relation.where(reflect.foreign_key => parent.map{|s| s["id"]}.uniq.compact)
+        parent_key = 'id'
+        if reflect.options[:through]
+          relation = relation.joins(reflect.options[:through])
+          relation_key = "#{reflect.options[:through]}.id"
+        else
+          relation_key = reflect.foreign_key
+        end
       end
+      return relation.where(relation_key => parent.map{|s| s[parent_key]}.uniq.compact)
     end
+  private
     def set_includes_data(parent, children_store_name, model)
       reflect = reflect_on_association(children_store_name)
       if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
