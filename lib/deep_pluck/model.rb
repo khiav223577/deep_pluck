@@ -18,6 +18,9 @@ module DeepPluck
     end
     def get_foreign_key(association_key, reverse = false)
       reflect = reflect_on_association(association_key)
+      if reflect.options[:through] and reverse #reverse = parent
+        return "#{reflect.options[:through]}.user_id" #TODO
+      end
       return (reflect.belongs_to? ? reflect.active_record.primary_key : reflect.foreign_key) if reverse
       return (reflect.belongs_to? ? reflect.foreign_key : reflect.active_record.primary_key)
     end
@@ -76,11 +79,16 @@ module DeepPluck
           s[children_store_name] = children_hash[id]
         }
       else       #Child.where(:parent_id => parent.pluck(:id))
+        if reflect.options[:through]
+          foreign_key = 'user_id' #TODO
+        else
+          foreign_key = reflect.foreign_key
+        end
         parent.each{|s| s[children_store_name] = [] } if reflect.collection?
         parent_hash = Hash[parent.map{|s| [s["id"], s]}]
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
         children.each{|s|
-          next if (id = s[reflect.foreign_key]) == nil
+          next if (id = s[foreign_key]) == nil
           if reflect.collection?
             parent_hash[id][children_store_name] << s
           else
@@ -99,6 +107,7 @@ module DeepPluck
       @data = @relation.pluck_all(*all_need_columns)
       if @data.size != 0
         @extra_columns = all_need_columns - @need_columns #for delete_extra_column_data!
+        @extra_columns.map!{|s| s.sub(/\w+\./, '')} #user_achievements.user_id => user_id
         @associations.each do |key, model|
           set_includes_data(@data, key, model)
         end
