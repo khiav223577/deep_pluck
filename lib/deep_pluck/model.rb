@@ -56,7 +56,9 @@ module DeepPluck
       relation = relation.joins(reflect.options[:through]) if reflect.options[:through]
       parent_key = get_foreign_key(reflect, false)
       relation_key = get_foreign_key(reflect, true)
-      ids = parent.map{|s| s[parent_key]}.uniq.compact
+      ids = parent.map{|s| s[parent_key]}
+      ids.uniq!
+      ids.compact!
       return relation.where(relation_key => ids)
     end
   private
