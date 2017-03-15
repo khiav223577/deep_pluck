@@ -18,8 +18,8 @@ module DeepPluck
     end
     def get_foreign_key(association_key, reverse = false)
       reflect = reflect_on_association(association_key)
-      return (reflect.belongs_to? ? @relation.klass.primary_key : reflect.foreign_key) if reverse
-      return (reflect.belongs_to? ? reflect.foreign_key : @relation.klass.primary_key)
+      return (reflect.belongs_to? ? reflect.active_record.primary_key : reflect.foreign_key) if reverse
+      return (reflect.belongs_to? ? reflect.foreign_key : reflect.active_record.primary_key)
     end
   #---------------------------------------
   #  Contruction OPs
