@@ -50,10 +50,17 @@ module DeepPluck
   #  Load
   #---------------------------------------
   private
-    def set_includes_data(parent, children_store_name, model, order_by = nil)
+    def do_query(parent, reflect, relation)
+      if reflect.belongs_to?
+        return relation.where(:id => parent.map{|s| s[reflect.foreign_key]}.uniq.compact)
+      else
+        return relation.where(reflect.foreign_key => parent.map{|s| s["id"]}.uniq.compact)
+      end
+    end
+    def set_includes_data(parent, children_store_name, model)
       reflect = reflect_on_association(children_store_name)
       if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
-        children = model.load_data{|relaction| relaction.where(:id => parent.map{|s| s[reflect.foreign_key]}.uniq.compact).order(order_by) }
+        children = model.load_data{|relation| do_query(parent, reflect, relation) }
         children_hash = Hash[children.map{|s| [s["id"], s]}]
         parent.each{|s|
           next if (id = s[reflect.foreign_key]) == nil
@@ -62,7 +69,7 @@ module DeepPluck
       else       #Child.where(:parent_id => parent.pluck(:id))
         parent.each{|s| s[children_store_name] = [] } if reflect.collection?
         parent_hash = Hash[parent.map{|s| [s["id"], s]}]
-        children = model.load_data{|relaction| relaction.where(reflect.foreign_key => parent.map{|s| s["id"]}.uniq.compact).order(order_by) }
+        children = model.load_data{|relation| do_query(parent, reflect, relation) }
         children.each{|s|
           next if (id = s[reflect.foreign_key]) == nil
           if reflect.collection?
