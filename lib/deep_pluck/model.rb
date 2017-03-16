@@ -16,12 +16,18 @@ module DeepPluck
     def get_reflect(association_key)
       @relation.klass.reflect_on_association(association_key.to_sym) #add to_sym since rails 3 only support symbol
     end
-    def get_foreign_key(reflect, reverse = false)
+    def get_foreign_key(reflect, reverse: false, with_table_name: false)
       if reflect.options[:through] and reverse #reverse = parent
-        return "#{reflect.options[:through]}.#{reflect.chain.last.foreign_key}"
+        chain_reflect = reflect.chain.last
+        table_name = chain_reflect.table_name
+        key = chain_reflect.foreign_key
+      else
+        return (reflect.belongs_to? ? reflect.active_record.primary_key : reflect.foreign_key) if reverse
+        table_name = reflect.active_record.table_name
+        key = (reflect.belongs_to? ? reflect.foreign_key : reflect.active_record.primary_key)
       end
-      return (reflect.belongs_to? ? reflect.active_record.primary_key : reflect.foreign_key) if reverse
-      return (reflect.belongs_to? ? reflect.foreign_key : reflect.active_record.primary_key)
+      return key if !with_table_name
+      return "#{table_name}.#{key}"
     end
   #---------------------------------------
   #  Contruction OPs
@@ -54,8 +60,8 @@ module DeepPluck
   private
     def do_query(parent, reflect, relation)
       relation = relation.joins(reflect.options[:through]) if reflect.options[:through]
-      parent_key = get_foreign_key(reflect, false)
-      relation_key = get_foreign_key(reflect, true)
+      parent_key = get_foreign_key(reflect)
+      relation_key = get_foreign_key(reflect, reverse: true, with_table_name: true)
       ids = parent.map{|s| s[parent_key]}
       ids.uniq!
       ids.compact!
@@ -75,7 +81,7 @@ module DeepPluck
         parent.each{|s| s[children_store_name] = [] } if reflect.collection?
         parent_hash = Hash[parent.map{|s| [s["id"], s]}]
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
-        foreign_key = get_foreign_key(reflect, true).sub(/\w+\./, '') #user_achievements.user_id => user_id
+        foreign_key = get_foreign_key(reflect, reverse: true)
         children.each{|s|
           next if (id = s[foreign_key]) == nil
           if reflect.collection?
@@ -89,14 +95,14 @@ module DeepPluck
     end
   public
     def load_data
-      prev_need_columns = @parent_model.get_foreign_key(@parent_model.get_reflect(@parent_association_key), true) if @parent_model
-      next_need_columns = @associations.map{|key, _| get_foreign_key(get_reflect(key)) }.uniq
+      prev_need_columns = @parent_model.get_foreign_key(@parent_model.get_reflect(@parent_association_key), reverse: true, with_table_name: true) if @parent_model
+      next_need_columns = @associations.map{|key, _| get_foreign_key(get_reflect(key), with_table_name: true) }.uniq
       all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq
       @relation = yield(@relation) if block_given?
       @data = @relation.pluck_all(*all_need_columns)
       if @data.size != 0
         @extra_columns = all_need_columns - @need_columns #for delete_extra_column_data!
-        @extra_columns.map!{|s| s.sub(/\w+\./, '')} #user_achievements.user_id => user_id
+        @extra_columns.map!{|s| s.gsub(/\w+[^\w]/, '')} #user_achievements.user_id => user_id
         @associations.each do |key, model|
           set_includes_data(@data, key, model)
         end
