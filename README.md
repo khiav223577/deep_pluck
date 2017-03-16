@@ -84,6 +84,12 @@ User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
 )
 ```
 
+### Better Performance
+
+#deep_pluck return raw hash data without loading a bunch of records.
+In that faster than #as_json, or #select.
+
+Will add some benchmarks soon :)
 
 
 ## Development
