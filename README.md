@@ -27,6 +27,64 @@ Or install it yourself as:
 
 ## Usage
 
+### Similar to #pluck method
+```rb
+User.deep_pluck(:id, :name)
+# SELECT `users`.`id`, `users`.`name` FROM `users` 
+# => [{'id' => 1, 'name' => 'David'}, {'id' => 2, 'name' => 'Jeremy'}]
+```
+
+### Pluck deep into associations
+```rb
+User.deep_pluck(:name, 'posts' => :title)
+# SELECT `users`.`id`, `users`.`name` FROM `users`
+# SELECT `posts`.`user_id`, `posts`.`title` FROM `posts` WHERE `posts`.`user_id` IN (1, 2)
+# => [
+#  {'name' => 'David' , 'posts' => [{'title' => 'post1'}, {'title' => 'post2'}]}, 
+#  {'name' => 'Jeremy', 'posts' => [{'title' => 'post3'}]}
+# ]
+```
+
+### DRY up Rails/ActiveRecord includes when using as_json
+
+Assume the following relations:
+
+> User has_many Posts.<br>
+> Post has_many PostComments.<br>
+> User has_one Contact.<br>
+
+And the following #as_json example:
+```rb
+User.where(:name => %w(Pearl Kathenrie)).includes([{:posts => :post_comments}, :contact]).as_json({
+  :root => false,
+  :only => [:name, :email], 
+  :include => {
+    'posts' => {
+      :only => :name, 
+      :include => {
+        'post_comments' => {
+          :only => :comment,
+        },
+      },
+    },
+    'contact' => {
+      :only => :address,
+    },
+  },
+})
+
+```
+You could refactor it with #deep_pluck like:
+```rb
+User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
+  :name, 
+  :email, 
+  'posts' => [:name, 'post_comments' => :comment], 
+  'contact' => :address,
+)
+```
+
+
 
 ## Development
 
