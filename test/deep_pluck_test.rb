@@ -74,6 +74,22 @@ class DeepPluckTest < Minitest::Test
     assert_equal expected, Achievement.deep_pluck(:name, :users => :name)
   end
 
+  def test_with_join_and_2_level_deep
+    expected = [
+      {"name" => "Pearl"    , "post_name" => "post4", :achievements => [{"name" => "achievement1"}, {"name" => "achievement3"}]}, 
+      {"name" => "Pearl"    , "post_name" => "post5", :achievements => [{"name" => "achievement1"}, {"name" => "achievement3"}]}, 
+      {"name" => "Kathenrie", "post_name" => "post6", :achievements => []}]
+    assert_equal expected, User.where(:name => %w(Pearl Kathenrie)).joins(:posts).deep_pluck(:'users.name', :'posts.name AS post_name', :achievements => :name)
+    expected = [
+      {"name" => "post3", "achievement" => "achievement1", :user => {"email" => "john@example.com"}},
+      {"name" => "post4", "achievement" => "achievement1", :user => {"email" => "pearl@example.com"}},
+      {"name" => "post5", "achievement" => "achievement1", :user => {"email" => "pearl@example.com"}},
+      {"name" => "post4", "achievement" => "achievement3", :user => {"email" => "pearl@example.com"}},
+      {"name" => "post5", "achievement" => "achievement3", :user => {"email" => "pearl@example.com"}},
+    ]
+    assert_equal expected, Post.where(:name => %w(post3 post4 post5 post6)).joins(:user => :achievements).deep_pluck(:'posts.name', :'achievements.name AS achievement', :user => :email)
+  end
+
   def test_as_json_equality
     expected = User.where(:name => %w(Pearl Kathenrie)).as_json({
       :root => false,
