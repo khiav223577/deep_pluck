@@ -72,14 +72,21 @@ module DeepPluck
       reflect = get_reflect(children_store_name)
       if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
-        children_hash = Hash[children.map{|s| [s["id"], s]}]
+        children_hash = children.map{|s| [s["id"], s]}.to_h
         parent.each{|s|
           next if (id = s[reflect.foreign_key]) == nil
           s[children_store_name] = children_hash[id]
         }
       else       #Child.where(:parent_id => parent.pluck(:id))
-        parent.each{|s| s[children_store_name] = [] } if reflect.collection?
-        parent_hash = Hash[parent.map{|s| [s["id"], s]}]
+        parent_hash = {}
+        parent.each do |model_hash|
+          key = model_hash['id']
+          if reflect.collection?
+            array = (parent_hash[key] ? parent_hash[key][children_store_name] : []) #hare the children if id is duplicated
+            model_hash[children_store_name] = array
+          end
+          parent_hash[key] = model_hash
+        end
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
         foreign_key = get_foreign_key(reflect, reverse: true)
         children.each{|s|
