@@ -109,7 +109,7 @@ module DeepPluck
       @data = @relation.pluck_all(*all_need_columns)
       if @data.size != 0
         @extra_columns = all_need_columns - @need_columns #for delete_extra_column_data!
-        @extra_columns.map!{|s| s.gsub(/\w+[^\w]/, '')} #user_achievements.user_id => user_id
+        @extra_columns.map!{|s| s.gsub(/\w*[^\w]/, '')} #user_achievements.user_id => user_id
         @associations.each do |key, model|
           set_includes_data(@data, key, model)
         end
