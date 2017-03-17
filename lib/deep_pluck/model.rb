@@ -105,12 +105,12 @@ module DeepPluck
     def load_data
       prev_need_columns = @parent_model.get_foreign_key(@parent_model.get_reflect(@parent_association_key), reverse: true, with_table_name: true) if @parent_model
       next_need_columns = @associations.map{|key, _| get_foreign_key(get_reflect(key), with_table_name: true) }.uniq
-      all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq
+      all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq(&Helper::TO_KEY_PROC)
       @relation = yield(@relation) if block_given?
       @data = @relation.pluck_all(*all_need_columns)
       if @data.size != 0
-        @extra_columns = all_need_columns - @need_columns #for delete_extra_column_data!
-        @extra_columns.map!{|s| Helper.column_to_key(s) }
+        #for delete_extra_column_data!
+        @extra_columns = all_need_columns.map(&Helper::TO_KEY_PROC) - @need_columns.map(&Helper::TO_KEY_PROC)
         @associations.each do |key, model|
           set_includes_data(@data, key, model)
         end
@@ -131,6 +131,7 @@ module DeepPluck
   #  Helper methods
   #---------------------------------------
     module Helper
+      TO_KEY_PROC = proc{|s| Helper.column_to_key(s) }
       def self.column_to_key(key) #user_achievements.user_id => user_id
         key = key[/(\w+)[^\w]*\z/]
         key.gsub!(/[^\w]+/, '')

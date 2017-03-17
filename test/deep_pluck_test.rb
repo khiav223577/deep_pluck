@@ -135,6 +135,6 @@ class DeepPluckTest < Minitest::Test
         }
       }
     })
-    assert_equal expected, User.limit(1).deep_pluck(:id, :posts => :name)
+    assert_equal expected, User.limit(1).deep_pluck(:id, 'posts' => :name)
   end
 end
