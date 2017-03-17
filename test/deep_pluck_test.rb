@@ -91,7 +91,7 @@ class DeepPluckTest < Minitest::Test
   end
 
   def test_as_json_equality
-    expected = User.where(:name => %w(Pearl Kathenrie)).as_json({
+    expected = User.where(:name => %w(Pearl Kathenrie)).includes([{:posts => :post_comments}, :contact]).as_json({
       :root => false,
       :only => [:name, :email], 
       :include => {
@@ -123,5 +123,19 @@ class DeepPluckTest < Minitest::Test
     assert_raises ActiveRecord::ConfigurationError do 
       User.deep_pluck(:name, :posts => {:post_comments2 => :comment})
     end
+  end
+
+  def test_should_not_except_need_columns
+    users = User.limit(1).includes(:posts)
+    expected = users.as_json({
+      :root => false,
+      :only => :id,
+      :include => {
+        'posts' => {
+          :only => :name,
+        }
+      }
+    })
+    assert_equal expected, users.deep_pluck(:id, 'posts' => :name)
   end
 end
