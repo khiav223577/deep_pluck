@@ -115,4 +115,13 @@ class DeepPluckTest < Minitest::Test
       'contact' => :address,
     )
   end
+
+  def test_wrong_association_name
+    assert_raises ActiveRecord::ConfigurationError do 
+      User.deep_pluck(:name, :postss => :name)
+    end
+    assert_raises ActiveRecord::ConfigurationError do 
+      User.deep_pluck(:name, :posts => {:post_comments2 => :comment})
+    end
+  end
 end

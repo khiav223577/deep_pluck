@@ -14,7 +14,8 @@ module DeepPluck
   #  Reader
   #---------------------------------------
     def get_reflect(association_key)
-      @relation.klass.reflect_on_association(association_key.to_sym) #add to_sym since rails 3 only support symbol
+      @relation.klass.reflect_on_association(association_key.to_sym) || #add to_sym since rails 3 only support symbol
+        raise(ActiveRecord::ConfigurationError, "ActiveRecord::ConfigurationError: Association named '#{association_key}' was not found on #{@relation.klass.name}; perhaps you misspelled it?")
     end
     def get_foreign_key(reflect, reverse: false, with_table_name: false)
       if reflect.options[:through] and reverse #reverse = parent
