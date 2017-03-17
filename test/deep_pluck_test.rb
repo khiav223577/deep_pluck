@@ -126,7 +126,8 @@ class DeepPluckTest < Minitest::Test
   end
 
   def test_should_not_except_need_columns
-    expected = User.limit(1).as_json({
+    users = User.limit(1).includes(:posts)
+    expected = users.as_json({
       :root => false,
       :only => :id,
       :include => {
@@ -135,6 +136,6 @@ class DeepPluckTest < Minitest::Test
         }
       }
     })
-    assert_equal expected, User.limit(1).deep_pluck(:id, 'posts' => :name)
+    assert_equal expected, users.deep_pluck(:id, 'posts' => :name)
   end
 end
