@@ -124,4 +124,17 @@ class DeepPluckTest < Minitest::Test
       User.deep_pluck(:name, :posts => {:post_comments2 => :comment})
     end
   end
+
+  def test_should_not_except_need_columns
+    expected = User.limit(1).as_json({
+      :root => false,
+      :only => :id,
+      :include => {
+        'posts' => {
+          :only => :name,
+        }
+      }
+    })
+    assert_equal expected, User.limit(1).deep_pluck(:id, :posts => :name)
+  end
 end
