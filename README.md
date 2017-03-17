@@ -6,7 +6,9 @@
 [![Code Climate](https://codeclimate.com/github/khiav223577/deep_pluck/badges/gpa.svg)](https://codeclimate.com/github/khiav223577/deep_pluck)
 [![Test Coverage](https://codeclimate.com/github/khiav223577/deep_pluck/badges/coverage.svg)](https://codeclimate.com/github/khiav223577/deep_pluck/coverage)
 
-Use deep_pluck as a shortcut to select one or more attributes and include associated models without loading a bunch of records. And DRY up your code when using #as_json.
+Allow you to pluck deep into associated models without loading a bunch of records.
+
+And DRY up your code when using #as_json.
 
 
 ## Installation
