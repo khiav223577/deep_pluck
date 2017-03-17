@@ -91,7 +91,7 @@ class DeepPluckTest < Minitest::Test
   end
 
   def test_as_json_equality
-    expected = User.where(:name => %w(Pearl Kathenrie)).as_json({
+    expected = User.where(:name => %w(Pearl Kathenrie)).includes([{:posts => :post_comments}, :contact]).as_json({
       :root => false,
       :only => [:name, :email], 
       :include => {
