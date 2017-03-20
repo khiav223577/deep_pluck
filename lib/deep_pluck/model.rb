@@ -17,8 +17,20 @@ module DeepPluck
       @relation.klass.reflect_on_association(association_key.to_sym) || #add to_sym since rails 3 only support symbol
         raise(ActiveRecord::ConfigurationError, "ActiveRecord::ConfigurationError: Association named '#{association_key}' was not found on #{@relation.klass.name}; perhaps you misspelled it?")
     end
+    def many_to_many?(reflect)
+      return get_join_table(reflect, true)
+    end
+    def get_join_table(reflect, bool_flag = false)
+      if reflect.options[:through]
+        return bool_flag ? true : reflect.options[:through] 
+      end
+      if reflect.macro == :has_and_belongs_to_many
+        return bool_flag ? true : (reflect.options[:join_table] || reflect.send(:derive_join_table))
+      end
+      return nil
+    end
     def get_foreign_key(reflect, reverse: false, with_table_name: false)
-      if reflect.options[:through] and reverse #reverse = parent
+      if reverse and many_to_many?(reflect) #reverse = parent
         chain_reflect = reflect.chain.last
         table_name = chain_reflect.table_name
         key = chain_reflect.foreign_key
@@ -60,7 +72,8 @@ module DeepPluck
   #---------------------------------------
   private
     def do_query(parent, reflect, relation)
-      relation = relation.joins(reflect.options[:through]) if reflect.options[:through]
+      join_table = get_join_table(reflect)
+      relation = relation.joins(join_table)
       parent_key = get_foreign_key(reflect)
       relation_key = get_foreign_key(reflect, reverse: true, with_table_name: true)
       ids = parent.map{|s| s[parent_key]}
