@@ -74,6 +74,21 @@ class DeepPluckTest < Minitest::Test
     assert_equal expected, Achievement.deep_pluck(:name, :users => :name)
   end
 
+  def test_has_and_belongs_to_many
+    expected = [
+      {"name" => "John"     , :achievements2 => [{"name" => "achievement1"}]}, 
+      {"name" => "Pearl"    , :achievements2 => [{"name" => "achievement1"}, {"name" => "achievement3"}]}, 
+      {"name" => "Kathenrie", :achievements2 => []},
+    ]
+    assert_equal expected, User.deep_pluck(:name, :achievements2 => :name)
+    expected = [
+      {"name" => "achievement1", :users2 => [{"name" => "John"}, {"name" => "Pearl"}]}, 
+      {"name" => "achievement2", :users2 => []},
+      {"name" => "achievement3", :users2 => [{"name" => "Pearl"}]},
+    ]
+    assert_equal expected, Achievement.deep_pluck(:name, :users2 => :name)
+  end
+
   def test_with_join_and_2_level_deep
     expected = [
       {"name" => "Pearl"    , "post_name" => "post4", :achievements => [{"name" => "achievement1"}, {"name" => "achievement3"}]}, 
