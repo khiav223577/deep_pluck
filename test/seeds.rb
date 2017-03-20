@@ -28,6 +28,11 @@ ActiveRecord::Schema.define do
     t.string :address
     t.string :phone_number
   end
+  create_table :contact2_infos, :id => false, :force => true do |t|
+    t.primary_key :id2
+    t.string :info
+    t.integer :contact_id2
+  end
   create_table :user_achievements, :force => true do |t|
     t.references :user, index: true
     t.references :achievement, index: true
@@ -58,6 +63,11 @@ end
 class Contact2 < ActiveRecord::Base
   self.primary_key = :id2
   belongs_to :user, :foreign_key => :user_id2
+  has_one :contact2_info, :foreign_key => :contact_id2
+end
+class Contact2Info < ActiveRecord::Base
+  self.primary_key = :id2
+  belongs_to :contact2
 end
 class UserAchievement < ActiveRecord::Base
   belongs_to :user
@@ -96,10 +106,15 @@ Contact.create([
   {:address => "Pearl's Home", :phone_number => "1011-0404-934", :user_id => users[1].id},
   {:address => "Kathenrie's Home", :phone_number => "02-254421", :user_id => users[2].id},
 ])
-Contact2.create([
+contact2 = Contact2.create([
   {:address => "John's Home2", :phone_number => "0911666888", :user_id2 => users[0].id},
   {:address => "Pearl's Home2", :phone_number => "1011-0404-934", :user_id2 => users[1].id},
   {:address => "Kathenrie's Home2", :phone_number => "02-254421", :user_id2 => users[2].id},
+])
+Contact2Info.create([
+  {:info => "info1", :contact_id2 => contact2[0].id},
+  {:info => "info2", :contact_id2 => contact2[1].id},
+  {:info => "info3", :contact_id2 => contact2[2].id},
 ])
 achievements = Achievement.create([
   {:name => 'achievement1'},
