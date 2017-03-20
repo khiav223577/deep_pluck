@@ -91,7 +91,7 @@ module DeepPluck
           parent_hash[key] = model_hash
         end
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
-        foreign_key = get_foreign_key(reflect, reverse: true)
+        foreign_key = get_foreign_key(reflect, reverse: true).to_s #may be symbol if specify foreign_key in association options
         children.each{|s|
           next if (id = s[foreign_key]) == nil
           if reflect.collection?
