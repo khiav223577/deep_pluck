@@ -176,10 +176,10 @@ class DeepPluckTest < Minitest::Test
     ]
     assert_equal expected, Contact2.deep_pluck(:address, :contact2_info => :info)
     expected = [
-      {"info" => "info1", :contact2 => {"address" => "John's Home2"     }}, 
-      {"info" => "info2", :contact2 => {"address" => "Pearl's Home2"    }}, 
-      {"info" => "info3", :contact2 => {"address" => "Kathenrie's Home2"}},
+      {"info" => "info1", :contact2 => {:user => {'name' => 'John'}}}, 
+      {"info" => "info2", :contact2 => {:user => {'name' => 'Pearl'}}}, 
+      {"info" => "info3", :contact2 => {:user => {'name' => 'Kathenrie'}}},
     ]
-    assert_equal expected, Contact2Info.deep_pluck(:info, :contact2 => :address)
+    assert_equal expected, Contact2Info.deep_pluck(:info, :contact2 => {:user => :name})
   end
 end
