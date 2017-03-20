@@ -22,15 +22,18 @@ module DeepPluck
       return (reflect.options[:join_table] || reflect.send(:derive_join_table)) if reflect.macro == :has_and_belongs_to_many
       return
     end
+    def get_primary_key(reflect)
+      return (reflect.belongs_to? ? reflect.klass : reflect.active_record).primary_key
+    end
     def get_foreign_key(reflect, reverse: false, with_table_name: false)
       if reverse and (table_name = get_join_table(reflect)) #reverse = parent
         key = reflect.chain.last.foreign_key
       else
-        return (reflect.belongs_to? ? reflect.active_record.primary_key : reflect.foreign_key) if reverse
+        return (reflect.belongs_to? ? get_primary_key(reflect) : reflect.foreign_key).to_s if reverse
         table_name = reflect.active_record.table_name
-        key = (reflect.belongs_to? ? reflect.foreign_key : reflect.active_record.primary_key)
+        key = (reflect.belongs_to? ? reflect.foreign_key : get_primary_key(reflect))
       end
-      return key if !with_table_name
+      return key.to_s if !with_table_name #key may be symbol if specify foreign_key in association options
       return "#{table_name}.#{key}"
     end
   #---------------------------------------
@@ -73,17 +76,19 @@ module DeepPluck
   private
     def set_includes_data(parent, children_store_name, model)
       reflect = get_reflect(children_store_name)
+      primary_key = get_primary_key(reflect)
       if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
-        children_hash = children.map{|s| [s["id"], s]}.to_h
+        children_hash = children.map{|s| [s[primary_key], s]}.to_h
+        foreign_key = get_foreign_key(reflect)
         parent.each{|s|
-          next if (id = s[reflect.foreign_key]) == nil
+          next if (id = s[foreign_key]) == nil
           s[children_store_name] = children_hash[id]
         }
       else       #Child.where(:parent_id => parent.pluck(:id))
         parent_hash = {}
         parent.each do |model_hash|
-          key = model_hash['id']
+          key = model_hash[primary_key]
           if reflect.collection?
             array = (parent_hash[key] ? parent_hash[key][children_store_name] : []) #share the children if id is duplicated
             model_hash[children_store_name] = array
