@@ -161,9 +161,9 @@ class DeepPluckTest < Minitest::Test
     ]
     assert_equal expected, User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :contact2 => :address)
     expected = [
-      {:user => {"name" => "John"}, "address" => "John's Home"}, 
-      {:user => {"name" => "Pearl"}, "address" => "Pearl's Home"}, 
-      {:user => {"name" => "Kathenrie"}, "address" => "Kathenrie's Home"},
+      {:user => {"name" => "John"}, "address" => "John's Home2"}, 
+      {:user => {"name" => "Pearl"}, "address" => "Pearl's Home2"}, 
+      {:user => {"name" => "Kathenrie"}, "address" => "Kathenrie's Home2"},
     ]
     assert_equal expected, Contact2.deep_pluck(:address, :user => :name)
   end

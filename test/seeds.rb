@@ -95,7 +95,7 @@ Contact.create([
   {:address => "Kathenrie's Home", :phone_number => "02-254421", :user_id => users[2].id},
 ])
 Contact2.create([
-  {:address => "John's Home", :phone_number => "0911666888", :user_id2 => users[0].id},
+  {:address => "John's Home2", :phone_number => "0911666888", :user_id2 => users[0].id},
   {:address => "Pearl's Home2", :phone_number => "1011-0404-934", :user_id2 => users[1].id},
   {:address => "Kathenrie's Home2", :phone_number => "02-254421", :user_id2 => users[2].id},
 ])
