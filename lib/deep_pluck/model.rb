@@ -26,7 +26,7 @@ module DeepPluck
       if reverse and (table_name = get_join_table(reflect)) #reverse = parent
         key = reflect.chain.last.foreign_key
       else
-        return (reflect.belongs_to? ? reflect.active_record.primary_key : reflect.foreign_key).to_s if reverse
+        return (reflect.belongs_to? ? reflect.klass.primary_key : reflect.foreign_key).to_s if reverse
         table_name = reflect.active_record.table_name
         key = (reflect.belongs_to? ? reflect.foreign_key : reflect.active_record.primary_key)
       end
