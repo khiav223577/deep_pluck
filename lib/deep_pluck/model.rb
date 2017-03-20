@@ -85,7 +85,7 @@ module DeepPluck
         parent.each do |model_hash|
           key = model_hash['id']
           if reflect.collection?
-            array = (parent_hash[key] ? parent_hash[key][children_store_name] : []) #hare the children if id is duplicated
+            array = (parent_hash[key] ? parent_hash[key][children_store_name] : []) #share the children if id is duplicated
             model_hash[children_store_name] = array
           end
           parent_hash[key] = model_hash
