@@ -154,17 +154,32 @@ class DeepPluckTest < Minitest::Test
     assert_equal expected, users.deep_pluck(:id, 'posts' => :name)
   end
 
-  def test_custom_foreign_key_and_primary_key
+  def test_custom_foreign_key
     expected = [
       {"name" => "Pearl", :contact2 => {"address" => "Pearl's Home2"}}, 
       {"name" => "Kathenrie", :contact2 => {"address" => "Kathenrie's Home2"}},
     ]
     assert_equal expected, User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :contact2 => :address)
     expected = [
-      {:user => {"name" => "John"     }, :contact2_info => {"info" => "info1"}, "address" => "John's Home2"}, 
-      {:user => {"name" => "Pearl"    }, :contact2_info => {"info" => "info2"}, "address" => "Pearl's Home2"}, 
-      {:user => {"name" => "Kathenrie"}, :contact2_info => {"info" => "info3"}, "address" => "Kathenrie's Home2"},
+      {:user => {"name" => "John"     }, "address" => "John's Home2"}, 
+      {:user => {"name" => "Pearl"    }, "address" => "Pearl's Home2"}, 
+      {:user => {"name" => "Kathenrie"}, "address" => "Kathenrie's Home2"},
     ]
-    assert_equal expected, Contact2.deep_pluck(:address, :user => :name, :contact2_info => :info)
+    assert_equal expected, Contact2.deep_pluck(:address, :user => :name)
+  end
+
+  def test_custom_primary_key
+    expected = [
+      {:contact2_info => {"info" => "info1"}, "address" => "John's Home2"}, 
+      {:contact2_info => {"info" => "info2"}, "address" => "Pearl's Home2"}, 
+      {:contact2_info => {"info" => "info3"}, "address" => "Kathenrie's Home2"},
+    ]
+    assert_equal expected, Contact2.deep_pluck(:address, :contact2_info => :info)
+    expected = [
+      {"info" => "info1", :contact2 => {"address" => "John's Home2"     }}, 
+      {"info" => "info2", :contact2 => {"address" => "Pearl's Home2"    }}, 
+      {"info" => "info3", :contact2 => {"address" => "Kathenrie's Home2"}},
+    ]
+    assert_equal expected, Contact2Info.deep_pluck(:info, :contact2 => :address)
   end
 end

@@ -67,7 +67,7 @@ class Contact2 < ActiveRecord::Base
 end
 class Contact2Info < ActiveRecord::Base
   self.primary_key = :id2
-  belongs_to :contact2
+  belongs_to :contact2, :foreign_key => :id2
 end
 class UserAchievement < ActiveRecord::Base
   belongs_to :user
