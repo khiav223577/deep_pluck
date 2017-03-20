@@ -76,8 +76,9 @@ module DeepPluck
       if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
         children = model.load_data{|relation| do_query(parent, reflect, relation) }
         children_hash = children.map{|s| [s["id"], s]}.to_h
+        foreign_key = get_foreign_key(reflect).to_s #may be symbol if specify foreign_key in association options
         parent.each{|s|
-          next if (id = s[reflect.foreign_key]) == nil
+          next if (id = s[foreign_key]) == nil
           s[children_store_name] = children_hash[id]
         }
       else       #Child.where(:parent_id => parent.pluck(:id))
