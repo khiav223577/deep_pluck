@@ -84,7 +84,7 @@ module DeepPluck
       else       #Child.where(:parent_id => parent.pluck(:id))
         parent_hash = {}
         parent.each do |model_hash|
-          key = model_hash['id']
+          key = model_hash[reflect.active_record.primary_key]
           if reflect.collection?
             array = (parent_hash[key] ? parent_hash[key][children_store_name] : []) #hare the children if id is duplicated
             model_hash[children_store_name] = array
