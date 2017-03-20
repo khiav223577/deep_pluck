@@ -63,14 +63,12 @@ module DeepPluck
   #---------------------------------------
   private
     def do_query(parent, reflect, relation)
-      join_table = get_join_table(reflect)
-      relation = relation.joins(join_table)
       parent_key = get_foreign_key(reflect)
       relation_key = get_foreign_key(reflect, reverse: true, with_table_name: true)
       ids = parent.map{|s| s[parent_key]}
       ids.uniq!
       ids.compact!
-      return relation.where(relation_key => ids)
+      return relation.joins(get_join_table(reflect)).where(relation_key => ids)
     end
   private
     def set_includes_data(parent, children_store_name, model)
