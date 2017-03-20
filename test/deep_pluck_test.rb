@@ -153,4 +153,18 @@ class DeepPluckTest < Minitest::Test
     })
     assert_equal expected, users.deep_pluck(:id, 'posts' => :name)
   end
+
+  def test_custom_foreign_key
+    expected = [
+      {"name" => "Pearl", :contact2 => {"address" => "Pearl's Home"}}, 
+      {"name" => "Kathenrie", :contact2 => {"address" => "Kathenrie's Home"}},
+    ]
+    assert_equal expected, User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :contact2 => :address)
+    expected = [
+      {:user => {"name" => "John"}, "address" => "John's Home"}, 
+      {:user => {"name" => "Pearl"}, "address" => "Pearl's Home"}, 
+      {:user => {"name" => "Kathenrie"}, "address" => "Kathenrie's Home"},
+    ]
+    assert_equal expected, Contact2.deep_pluck(:address, :user => :name)
+  end
 end

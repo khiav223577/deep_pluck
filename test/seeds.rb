@@ -22,6 +22,11 @@ ActiveRecord::Schema.define do
     t.string :address
     t.string :phone_number
   end
+  create_table :contact2s, :force => true do |t|
+    t.integer :user_id2
+    t.string :address
+    t.string :phone_number
+  end
   create_table :user_achievements, :force => true do |t|
     t.references :user, index: true
     t.references :achievement, index: true
@@ -34,6 +39,7 @@ class User < ActiveRecord::Base
   serialize :serialized_attribute, Hash
   has_many :posts
   has_one :contact
+  has_one :contact2, :foreign_key => :user_id2
   has_many :user_achievements
   has_many :achievements, :through => :user_achievements
   has_and_belongs_to_many :achievements2, class_name: 'Achievement', :join_table => :user_achievements
@@ -47,6 +53,9 @@ class PostComment < ActiveRecord::Base
 end
 class Contact < ActiveRecord::Base
   belongs_to :user
+end
+class Contact2 < ActiveRecord::Base
+  belongs_to :user, :foreign_key => :user_id2
 end
 class UserAchievement < ActiveRecord::Base
   belongs_to :user
@@ -84,6 +93,11 @@ Contact.create([
   {:address => "John's Home", :phone_number => "0911666888", :user_id => users[0].id},
   {:address => "Pearl's Home", :phone_number => "1011-0404-934", :user_id => users[1].id},
   {:address => "Kathenrie's Home", :phone_number => "02-254421", :user_id => users[2].id},
+])
+Contact2.create([
+  {:address => "John's Home", :phone_number => "0911666888", :user_id2 => users[0].id},
+  {:address => "Pearl's Home2", :phone_number => "1011-0404-934", :user_id2 => users[1].id},
+  {:address => "Kathenrie's Home2", :phone_number => "02-254421", :user_id2 => users[2].id},
 ])
 achievements = Achievement.create([
   {:name => 'achievement1'},
