@@ -17,11 +17,14 @@ module DeepPluck
       @relation.klass.reflect_on_association(association_key.to_sym) || #add to_sym since rails 3 only support symbol
         raise(ActiveRecord::ConfigurationError, "ActiveRecord::ConfigurationError: Association named '#{association_key}' was not found on #{@relation.klass.name}; perhaps you misspelled it?")
     end
+    def get_join_table(reflect, bool_flag = false)
+      return reflect.options[:through] if reflect.options[:through]
+      return (reflect.options[:join_table] || reflect.send(:derive_join_table)) if reflect.macro == :has_and_belongs_to_many
+      return
+    end
     def get_foreign_key(reflect, reverse: false, with_table_name: false)
-      if reflect.options[:through] and reverse #reverse = parent
-        chain_reflect = reflect.chain.last
-        table_name = chain_reflect.table_name
-        key = chain_reflect.foreign_key
+      if reverse and (table_name = get_join_table(reflect)) #reverse = parent
+        key = reflect.chain.last.foreign_key
       else
         return (reflect.belongs_to? ? reflect.active_record.primary_key : reflect.foreign_key) if reverse
         table_name = reflect.active_record.table_name
@@ -60,13 +63,12 @@ module DeepPluck
   #---------------------------------------
   private
     def do_query(parent, reflect, relation)
-      relation = relation.joins(reflect.options[:through]) if reflect.options[:through]
       parent_key = get_foreign_key(reflect)
       relation_key = get_foreign_key(reflect, reverse: true, with_table_name: true)
       ids = parent.map{|s| s[parent_key]}
       ids.uniq!
       ids.compact!
-      return relation.where(relation_key => ids)
+      return relation.joins(get_join_table(reflect)).where(relation_key => ids)
     end
   private
     def set_includes_data(parent, children_store_name, model)

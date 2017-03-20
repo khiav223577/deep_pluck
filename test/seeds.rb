@@ -36,6 +36,7 @@ class User < ActiveRecord::Base
   has_one :contact
   has_many :user_achievements
   has_many :achievements, :through => :user_achievements
+  has_and_belongs_to_many :achievements2, class_name: 'Achievement', :join_table => :user_achievements
 end
 class Post < ActiveRecord::Base
   belongs_to :user
@@ -55,6 +56,7 @@ end
 class Achievement < ActiveRecord::Base
   has_many :user_achievements
   has_many :users, :through => :user_achievements
+  has_and_belongs_to_many :users2, class_name: 'User', :join_table => :user_achievements
 end
 
 users = User.create([
