@@ -156,15 +156,15 @@ class DeepPluckTest < Minitest::Test
 
   def test_custom_foreign_key
     expected = [
-      {"name" => "Pearl", :contact2 => {"address" => "Pearl's Home2"}}, 
-      {"name" => "Kathenrie", :contact2 => {"address" => "Kathenrie's Home2"}},
+      {"name" => "Pearl", 'contact2' => {"address" => "Pearl's Home2"}}, 
+      {"name" => "Kathenrie", 'contact2' => {"address" => "Kathenrie's Home2"}},
     ]
-    assert_equal expected, User.where(:name => %w(Pearl Kathenrie)).deep_pluck(:name, :contact2 => :address)
+    assert_equal expected, User.where(:name => %w(Pearl Kathenrie)).as_json(:only => :name, :include => {:contact2 => {:only => :address}})
     expected = [
-      {:user => {"name" => "John"}, "address" => "John's Home2"}, 
-      {:user => {"name" => "Pearl"}, "address" => "Pearl's Home2"}, 
-      {:user => {"name" => "Kathenrie"}, "address" => "Kathenrie's Home2"},
+      {'user' => {"name" => "John"}, "address" => "John's Home2"}, 
+      {'user' => {"name" => "Pearl"}, "address" => "Pearl's Home2"}, 
+      {'user' => {"name" => "Kathenrie"}, "address" => "Kathenrie's Home2"},
     ]
-    assert_equal expected, Contact2.deep_pluck(:address, :user => :name)
+    assert_equal expected, Contact2.where('').as_json(:only => :address, :include => {:user => {:only => :name}})
   end
 end

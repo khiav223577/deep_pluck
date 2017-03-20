@@ -22,7 +22,8 @@ ActiveRecord::Schema.define do
     t.string :address
     t.string :phone_number
   end
-  create_table :contact2s, :force => true do |t|
+  create_table :contact2s, :id => false, :force => true do |t|
+    t.primary_key :id2
     t.integer :user_id2
     t.string :address
     t.string :phone_number
@@ -55,6 +56,7 @@ class Contact < ActiveRecord::Base
   belongs_to :user
 end
 class Contact2 < ActiveRecord::Base
+  self.primary_key = :id2
   belongs_to :user, :foreign_key => :user_id2
 end
 class UserAchievement < ActiveRecord::Base
