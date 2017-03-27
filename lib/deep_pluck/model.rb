@@ -79,7 +79,6 @@ module DeepPluck
       relation = with_conditions(reflect, relation)
       return relation.joins(get_join_table(reflect)).where(relation_key => ids)
     end
-  private
     def set_includes_data(parent, children_store_name, model)
       reflect = get_reflect(children_store_name)
       primary_key = get_primary_key(reflect)
