@@ -79,12 +79,23 @@ module DeepPluck
       relation = with_conditions(reflect, relation)
       return relation.joins(get_join_table(reflect)).where(relation_key => ids)
     end
-    def assign_values_to_parent(reflect, parent, children_hash, children_store_name, foreign_key, reverse: false)
+    def make_parent_hash(parent, primary_key, children_store_name, collection)
+      return parent.map{|s| [s[primary_key], s]}.to_h if !collection
+      hash = {}
+      parent.each do |model_hash|
+        key = model_hash[primary_key]
+        array = (hash[key] ? hash[key][children_store_name] : []) #share the children if id is duplicated
+        model_hash[children_store_name] = array
+        hash[key] = model_hash
+      end
+      return hash
+    end
+    def assign_values_to_parent(collection, parent, children_hash, children_store_name, foreign_key, reverse: false)
       parent.each{|s|
         next if (id = s[foreign_key]) == nil
         left   =  reverse ? children_hash[id] : s
         right  = !reverse ? children_hash[id] : s
-        if reflect.collection?
+        if collection
           left[children_store_name] << right
         else
           left[children_store_name] = right
@@ -96,21 +107,13 @@ module DeepPluck
       primary_key = get_primary_key(reflect)
       children = model.load_data{|relation| do_query(parent, reflect, relation) }
       if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
-        children_hash = children.map{|s| [s[primary_key], s]}.to_h
+        children_hash = make_parent_hash(children, primary_key, children_store_name, reflect.collection?)
         foreign_key = get_foreign_key(reflect)
-        assign_values_to_parent(reflect, parent, children_hash, children_store_name, foreign_key)
+        assign_values_to_parent(reflect.collection?, parent, children_hash, children_store_name, foreign_key)
       else       #Child.where(:parent_id => parent.pluck(:id))
-        parent_hash = {}
-        parent.each do |model_hash|
-          key = model_hash[primary_key]
-          if reflect.collection?
-            array = (parent_hash[key] ? parent_hash[key][children_store_name] : []) #share the children if id is duplicated
-            model_hash[children_store_name] = array
-          end
-          parent_hash[key] = model_hash
-        end
+        parent_hash = make_parent_hash(parent, primary_key, children_store_name, reflect.collection?)
         foreign_key = get_foreign_key(reflect, reverse: true)
-        assign_values_to_parent(reflect, children, parent_hash, children_store_name, foreign_key, reverse: true)
+        assign_values_to_parent(reflect.collection?, children, parent_hash, children_store_name, foreign_key, reverse: true)
       end
       return children
     end
