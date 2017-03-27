@@ -23,7 +23,7 @@ module DeepPluck
       relation = relation.where(options[:conditions]) if options[:conditions]
       return relation
     end
-    def get_join_table(reflect, bool_flag = false)
+    def get_join_table(reflect)
       return reflect.options[:through] if reflect.options[:through]
       return (reflect.options[:join_table] || reflect.send(:derive_join_table)) if reflect.macro == :has_and_belongs_to_many
       return nil
