@@ -79,31 +79,31 @@ module DeepPluck
       relation = with_conditions(reflect, relation)
       return relation.joins(get_join_table(reflect)).where(relation_key => ids)
     end
-    def make_data_hash(collection, parent, primary_key, children_store_name)
+    def make_data_hash(collection, parent, primary_key, column_name)
       return parent.map{|s| [s[primary_key], s]}.to_h if !collection
       hash = {}
       parent.each do |model_hash|
         key = model_hash[primary_key]
-        array = (hash[key] ? hash[key][children_store_name] : []) #share the children if id is duplicated
-        model_hash[children_store_name] = array
+        array = (hash[key] ? hash[key][column_name] : []) #share the children if id is duplicated
+        model_hash[column_name] = array
         hash[key] = model_hash
       end
       return hash
     end
-    def assign_values_to_parent(collection, parent, children_hash, children_store_name, foreign_key, reverse: false)
+    def assign_values_to_parent(collection, parent, children_hash, column_name, foreign_key, reverse: false)
       parent.each{|s|
         next if (id = s[foreign_key]) == nil
         left   =  reverse ? children_hash[id] : s
         right  = !reverse ? children_hash[id] : s
         if collection
-          left[children_store_name] << right
+          left[column_name] << right
         else
-          left[children_store_name] = right
+          left[column_name] = right
         end
       }
     end
-    def set_includes_data(parent, children_store_name, model)
-      reflect = get_reflect(children_store_name)
+    def set_includes_data(parent, column_name, model)
+      reflect = get_reflect(column_name)
       primary_key = get_primary_key(reflect)
       children = model.load_data{|relation| do_query(parent, reflect, relation) }
       #reverse = false: Child.where(:id => parent.pluck(:child_id))
@@ -112,8 +112,8 @@ module DeepPluck
       source =  reverse ? parent : children
       target = !reverse ? parent : children
       foreign_key = get_foreign_key(reflect, reverse: reverse)
-      data_hash = make_data_hash(reflect.collection?, source, primary_key, children_store_name)
-      assign_values_to_parent(reflect.collection?, target, data_hash, children_store_name, foreign_key, reverse: reverse)
+      data_hash = make_data_hash(reflect.collection?, source, primary_key, column_name)
+      assign_values_to_parent(reflect.collection?, target, data_hash, column_name, foreign_key, reverse: reverse)
       return children
     end
   public
