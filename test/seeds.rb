@@ -44,6 +44,7 @@ end
 class User < ActiveRecord::Base
   serialize :serialized_attribute, Hash
   has_many :posts
+  has_many :posts_1_3, -> { where('title LIKE ? OR title LIKE ? ', '%post1', '%post3') }, :class_name => "Post"
   has_one :contact
   has_one :contact2, :foreign_key => :user_id2
   has_many :user_achievements
