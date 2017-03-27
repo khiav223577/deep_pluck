@@ -4,8 +4,7 @@ ActiveRecord::Schema.define do
   create_table :users, :force => true do |t|
     t.string :name
     t.string :email
-    t.string :profile_pic
-    t.string :pet_pic
+    t.string :gender
     t.text :serialized_attribute
   end
   create_table :posts, :force => true do |t|
@@ -44,6 +43,11 @@ end
 class User < ActiveRecord::Base
   serialize :serialized_attribute, Hash
   has_many :posts
+  if Gem::Version.new(ActiveRecord::VERSION::STRING) < Gem::Version.new('4.0.0')
+    has_many :posts_1_3, :conditions => ['title LIKE ? OR title LIKE ? ', '%post1', '%post3'], :class_name => "Post"
+  else
+    has_many :posts_1_3, -> { where('title LIKE ? OR title LIKE ? ', '%post1', '%post3') }, :class_name => "Post"
+  end
   has_one :contact
   has_one :contact2, :foreign_key => :user_id2
   has_many :user_achievements
@@ -77,16 +81,19 @@ end
 class Achievement < ActiveRecord::Base
   has_many :user_achievements
   has_many :users, :through => :user_achievements
+  if Gem::Version.new(ActiveRecord::VERSION::STRING) < Gem::Version.new('4.0.0')
+    has_many :female_users, :conditions => {:gender => 'female'}, :through => :user_achievements, :foreign_key => "user_id", :source => :user
+  else
+    has_many :female_users, ->{ where(:gender => 'female')}, :through => :user_achievements, :foreign_key => "user_id", :source => :user
+  end
   has_and_belongs_to_many :users2, class_name: 'User', :join_table => :user_achievements
 end
 
 users = User.create([
-  {:name => 'John', :email => 'john@example.com'},
-  {:name => 'Pearl', :email => 'pearl@example.com', :serialized_attribute => {:testing => true, :deep => {:deep => :deep}}},
-  {:name => 'Kathenrie', :email => 'kathenrie@example.com'},
+  {:name => 'John', :email => 'john@example.com', :gender => 'male'},
+  {:name => 'Pearl', :email => 'pearl@example.com', :gender => 'female', :serialized_attribute => {:testing => true, :deep => {:deep => :deep}}},
+  {:name => 'Kathenrie', :email => 'kathenrie@example.com', :gender => 'female'},
 ])
-User.where(:name => 'John').update_all(:profile_pic => 'JohnProfile.jpg') # skip carrierwave
-User.where(:name => 'Kathenrie').update_all(:profile_pic => 'Profile.jpg', :pet_pic => 'Pet.png') # skip carrierwave
 posts = Post.create([
   {:name => 'post1', :title => "John's post1", :user_id => users[0].id},
   {:name => 'post2', :title => "John's post2", :user_id => users[0].id},

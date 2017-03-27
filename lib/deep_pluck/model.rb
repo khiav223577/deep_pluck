@@ -17,6 +17,12 @@ module DeepPluck
       @relation.klass.reflect_on_association(association_key.to_sym) || #add to_sym since rails 3 only support symbol
         raise(ActiveRecord::ConfigurationError, "ActiveRecord::ConfigurationError: Association named '#{association_key}' was not found on #{@relation.klass.name}; perhaps you misspelled it?")
     end
+    def with_conditions(reflect, relation)
+      options = reflect.options
+      relation = relation.instance_exec(&reflect.scope) if reflect.respond_to?(:scope) and reflect.scope
+      relation = relation.where(options[:conditions]) if options[:conditions]
+      return relation
+    end
     def get_join_table(reflect, bool_flag = false)
       return reflect.options[:through] if reflect.options[:through]
       return (reflect.options[:join_table] || reflect.send(:derive_join_table)) if reflect.macro == :has_and_belongs_to_many
@@ -71,6 +77,7 @@ module DeepPluck
       ids = parent.map{|s| s[parent_key]}
       ids.uniq!
       ids.compact!
+      relation = with_conditions(reflect, relation)
       return relation.joins(get_join_table(reflect)).where(relation_key => ids)
     end
   private

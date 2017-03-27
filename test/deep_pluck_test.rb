@@ -182,4 +182,21 @@ class DeepPluckTest < Minitest::Test
     ]
     assert_equal expected, Contact2Info.deep_pluck(:info, :contact2 => {:user => :name})
   end
+
+  def test_conditional_relations
+    assert_equal [
+      {"name" => "John"     , :posts_1_3 => [{"title" => "John's post1"}, {"title" => "John's post3"}]}, 
+      {"name" => "Pearl"    , :posts_1_3 => [{"title" => "Pearl's post1"}]}, 
+      {"name" => "Kathenrie", :posts_1_3 => [{"title" => "Kathenrie's post1"}]}
+    ], User.deep_pluck(:name, :posts_1_3 => [:title])
+  end
+
+  def test_conditional_through_relations
+    expected = [
+      {"name" => "achievement1", :female_users => [{"name" => "Pearl"}]}, 
+      {"name" => "achievement2", :female_users => []},
+      {"name" => "achievement3", :female_users => [{"name" => "Pearl"}]},
+    ]
+    assert_equal expected, Achievement.deep_pluck(:name, :female_users => :name)
+  end
 end
