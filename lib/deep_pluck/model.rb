@@ -79,17 +79,26 @@ module DeepPluck
       relation = with_conditions(reflect, relation)
       return relation.joins(get_join_table(reflect)).where(relation_key => ids)
     end
+    def assign_values_to_parent(reflect, parent, children_hash, children_store_name, foreign_key, reverse: false)
+      parent.each{|s|
+        next if (id = s[foreign_key]) == nil
+        left   =  reverse ? children_hash[id] : s
+        right  = !reverse ? children_hash[id] : s
+        if reflect.collection?
+          left[children_store_name] << right
+        else
+          left[children_store_name] = right
+        end
+      }
+    end
     def set_includes_data(parent, children_store_name, model)
       reflect = get_reflect(children_store_name)
       primary_key = get_primary_key(reflect)
+      children = model.load_data{|relation| do_query(parent, reflect, relation) }
       if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
-        children = model.load_data{|relation| do_query(parent, reflect, relation) }
         children_hash = children.map{|s| [s[primary_key], s]}.to_h
         foreign_key = get_foreign_key(reflect)
-        parent.each{|s|
-          next if (id = s[foreign_key]) == nil
-          s[children_store_name] = children_hash[id]
-        }
+        assign_values_to_parent(reflect, parent, children_hash, children_store_name, foreign_key)
       else       #Child.where(:parent_id => parent.pluck(:id))
         parent_hash = {}
         parent.each do |model_hash|
@@ -100,16 +109,8 @@ module DeepPluck
           end
           parent_hash[key] = model_hash
         end
-        children = model.load_data{|relation| do_query(parent, reflect, relation) }
         foreign_key = get_foreign_key(reflect, reverse: true)
-        children.each{|s|
-          next if (id = s[foreign_key]) == nil
-          if reflect.collection?
-            parent_hash[id][children_store_name] << s
-          else
-            parent_hash[id][children_store_name] = s
-          end
-        }
+        assign_values_to_parent(reflect, children, parent_hash, children_store_name, foreign_key, reverse: true)
       end
       return children
     end
