@@ -79,7 +79,7 @@ module DeepPluck
       relation = with_conditions(reflect, relation)
       return relation.joins(get_join_table(reflect)).where(relation_key => ids)
     end
-    def make_parent_hash(parent, primary_key, children_store_name, collection)
+    def make_data_hash(collection, parent, primary_key, children_store_name)
       return parent.map{|s| [s[primary_key], s]}.to_h if !collection
       hash = {}
       parent.each do |model_hash|
@@ -106,15 +106,14 @@ module DeepPluck
       reflect = get_reflect(children_store_name)
       primary_key = get_primary_key(reflect)
       children = model.load_data{|relation| do_query(parent, reflect, relation) }
-      if reflect.belongs_to? #Child.where(:id => parent.pluck(:child_id))
-        children_hash = make_parent_hash(children, primary_key, children_store_name, reflect.collection?)
-        foreign_key = get_foreign_key(reflect)
-        assign_values_to_parent(reflect.collection?, parent, children_hash, children_store_name, foreign_key)
-      else       #Child.where(:parent_id => parent.pluck(:id))
-        parent_hash = make_parent_hash(parent, primary_key, children_store_name, reflect.collection?)
-        foreign_key = get_foreign_key(reflect, reverse: true)
-        assign_values_to_parent(reflect.collection?, children, parent_hash, children_store_name, foreign_key, reverse: true)
-      end
+      #reverse = false: Child.where(:id => parent.pluck(:child_id))
+      #reverse = true : Child.where(:parent_id => parent.pluck(:id))
+      reverse = !reflect.belongs_to?
+      source =  reverse ? parent : children
+      target = !reverse ? parent : children
+      foreign_key = get_foreign_key(reflect, reverse: reverse)
+      data_hash = make_data_hash(reflect.collection?, source, primary_key, children_store_name)
+      assign_values_to_parent(reflect.collection?, target, data_hash, children_store_name, foreign_key, reverse: reverse)
       return children
     end
   public
