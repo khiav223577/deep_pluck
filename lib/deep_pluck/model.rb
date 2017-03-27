@@ -26,7 +26,7 @@ module DeepPluck
     def get_join_table(reflect, bool_flag = false)
       return reflect.options[:through] if reflect.options[:through]
       return (reflect.options[:join_table] || reflect.send(:derive_join_table)) if reflect.macro == :has_and_belongs_to_many
-      return
+      return nil
     end
     def get_primary_key(reflect)
       return (reflect.belongs_to? ? reflect.klass : reflect.active_record).primary_key
@@ -35,12 +35,11 @@ module DeepPluck
       if reverse and (table_name = get_join_table(reflect)) #reverse = parent
         key = reflect.chain.last.foreign_key
       else
-        return (reflect.belongs_to? ? get_primary_key(reflect) : reflect.foreign_key).to_s if reverse
-        table_name = reflect.active_record.table_name
-        key = (reflect.belongs_to? ? reflect.foreign_key : get_primary_key(reflect))
+        key = (reflect.belongs_to? == reverse ? get_primary_key(reflect) : reflect.foreign_key)
+        table_name = (reverse ? reflect.klass : reflect.active_record).table_name
       end
-      return key.to_s if !with_table_name #key may be symbol if specify foreign_key in association options
-      return "#{table_name}.#{key}"
+      return "#{table_name}.#{key}" if with_table_name
+      return key.to_s #key may be symbol if specify foreign_key in association options
     end
   #---------------------------------------
   #  Contruction OPs
