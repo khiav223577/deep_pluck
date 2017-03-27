@@ -19,6 +19,7 @@ module DeepPluck
     end
     def with_conditions(reflect, relation)
       options = reflect.options
+      relation = relation.instance_exec(&reflect.scope) if reflect.respond_to?(:scope) and reflect.scope
       relation = relation.where(options[:conditions]) if options[:conditions]
       return relation
     end
