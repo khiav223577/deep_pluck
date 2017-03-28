@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "sqlite3", "~> 1.3"
   spec.add_development_dependency "minitest", "~> 5.0"
 
-  spec.add_dependency "active_record", "> 3.x"
+  spec.add_dependency "activerecord", "> 3.x"
   spec.add_dependency "pluck_all", "~> 1.2.2"
 
 end
