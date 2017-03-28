@@ -110,7 +110,7 @@ The following is the benchmark test on 10000 users, where `users` table have 46 
 # Repeat 1 times
 # User.select('account, email').map{|s| {'account' => s.account, 'email' => s.email}}
 # User.select('account, email').as_json(:only => [:account, :email])
-# User.where(:id => 1..10000).deep_pluck(:account, :email)
+# User.deep_pluck(:account, :email)
 
                        user     system      total        real
 map                0.210000   0.000000   0.210000 (  0.225421)
