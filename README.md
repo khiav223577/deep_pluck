@@ -92,8 +92,11 @@ User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
 
 In that faster than #as_json, or #select.
 
-The following is the benchmark test on 3 users, 6 posts and repeat it 500 times.
+The following is the benchmark test on 3 users, 6 posts, where `users` table have 14 columns and `posts` have 6 columns. As it shows, `deep_pluck` is 4x faster than `as_json`.
+
+
 ```rb
+# Repeat 500 times
 # User.includes(:posts).as_json(:only => :email, :include => {:posts => {:only => :title}})
 # User.deep_pluck(:email, {'posts' => :title})
 
@@ -101,7 +104,19 @@ The following is the benchmark test on 3 users, 6 posts and repeat it 500 times.
 as_json            1.740000   1.230000   2.970000 (  3.231465)
 deep_pluck         0.660000   0.030000   0.690000 (  0.880018)
 ```
-Will add some benchmarks soon :)
+
+The following is the benchmark test on 10000 users, where `users` table have 46 columns. As it shows, `deep_pluck` is 40x faster than `as_json` and 4x faster than `map`.
+```rb
+# Repeat 1 times
+# User.select('account, email').map{|s| {'account' => s.account, 'email' => s.email}}
+# User.select('account, email').as_json(:only => [:account, :email])
+# User.where(:id => 1..10000).deep_pluck(:account, :email)
+
+                       user     system      total        real
+map                0.210000   0.000000   0.210000 (  0.225421)
+as_json            1.980000   0.060000   2.040000 (  2.042205)
+deep_pluck         0.040000   0.000000   0.040000 (  0.051673)
+```
 
 
 ## Development
