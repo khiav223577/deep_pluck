@@ -76,6 +76,8 @@ User.where(:name => %w(Pearl Kathenrie)).includes([{:posts => :post_comments}, :
 })
 
 ```
+It works as expected, but is not very DRY, repeat writing `include`, `posts`, `post_comments` so many times.
+
 You could refactor it with #deep_pluck like:
 ```rb
 User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
