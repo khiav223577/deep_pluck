@@ -92,6 +92,15 @@ User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
 
 In that faster than #as_json, or #select.
 
+The following is the benchmark test on 3 users, 6 posts and repeat it 500 times.
+```rb
+# User.includes(:posts).as_json(:only => :email, :include => {:posts => {:only => :title}})
+# User.deep_pluck(:email, {'posts' => :title})
+
+                       user     system      total        real
+as_json            1.740000   1.230000   2.970000 (  3.231465)
+deep_pluck         0.660000   0.030000   0.690000 (  0.880018)
+```
 Will add some benchmarks soon :)
 
 
