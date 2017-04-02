@@ -10,6 +10,8 @@ Allow you to pluck deeply into nested associations without loading a bunch of re
 
 And DRY up your code when using #as_json.
 
+Works in Rails 3+.
+
 
 ## Installation
 
