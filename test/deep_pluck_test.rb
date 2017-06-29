@@ -199,4 +199,15 @@ class DeepPluckTest < Minitest::Test
     ]
     assert_equal expected, Achievement.deep_pluck(:name, :female_users => :name)
   end
+
+  def test_polymorphic_relations
+    user_expected = [{:notes => [{"content" => "user note"}]}]
+    contact_expected = [{:note => {"content" => "contact note"}}]
+    post_expected = [{:notes => [{"content" => "post note"}]}]
+
+    assert_equal user_expected, User.where(id: 1).deep_pluck(:notes => [:content])
+    assert_equal contact_expected, Contact.where(id: 1).deep_pluck(:note => [:content])
+    assert_equal post_expected, Post.where(id: 1).deep_pluck(:notes => [:content])
+  end
+
 end
