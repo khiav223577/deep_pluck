@@ -79,7 +79,7 @@ module DeepPluck
       ids.compact!
       relation = with_conditions(reflect, relation)
       query = { relation_key => ids }
-      query[reflect.type] = reflect.active_record if reflect.type
+      query[reflect.type] = reflect.active_record.to_s if reflect.type
       return relation.joins(get_join_table(reflect)).where(query)
     end
     def set_includes_data(parent, column_name, model)
