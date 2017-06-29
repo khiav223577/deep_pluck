@@ -39,6 +39,11 @@ ActiveRecord::Schema.define do
   create_table :achievements, :force => true do |t|
     t.string :name
   end
+  create_table :notes, :force => true do |t|
+    t.integer :parent_id
+    t.string :parent_type
+    t.string :content
+  end
 end
 class User < ActiveRecord::Base
   serialize :serialized_attribute, Hash
@@ -50,6 +55,7 @@ class User < ActiveRecord::Base
   end
   has_one :contact
   has_one :contact2, :foreign_key => :user_id2
+  has_many :notes, as: :parent
   has_many :user_achievements
   has_many :achievements, :through => :user_achievements
   has_and_belongs_to_many :achievements2, class_name: 'Achievement', :join_table => :user_achievements
@@ -57,12 +63,14 @@ end
 class Post < ActiveRecord::Base
   belongs_to :user
   has_many :post_comments
+  has_many :notes, as: :parent
 end
 class PostComment < ActiveRecord::Base
   belongs_to :post
 end
 class Contact < ActiveRecord::Base
   belongs_to :user
+  has_one :note, as: :parent
 end
 class Contact2 < ActiveRecord::Base
   self.primary_key = :id2
@@ -89,6 +97,10 @@ class Achievement < ActiveRecord::Base
   has_and_belongs_to_many :users2, class_name: 'User', :join_table => :user_achievements
 end
 
+class Note < ActiveRecord::Base
+  belongs_to :parent, polymorphic: true
+end
+
 users = User.create([
   {:name => 'John', :email => 'john@example.com', :gender => 'male'},
   {:name => 'Pearl', :email => 'pearl@example.com', :gender => 'female', :serialized_attribute => {:testing => true, :deep => {:deep => :deep}}},
@@ -108,7 +120,7 @@ PostComment.create([
   {:post_id => posts[3].id, :comment => "cool!"},
   {:post_id => posts[5].id, :comment => "hahahahahahha"},
 ])
-Contact.create([
+contacts = Contact.create([
   {:address => "John's Home", :phone_number => "0911666888", :user_id => users[0].id},
   {:address => "Pearl's Home", :phone_number => "1011-0404-934", :user_id => users[1].id},
   {:address => "Kathenrie's Home", :phone_number => "02-254421", :user_id => users[2].id},
@@ -132,4 +144,9 @@ UserAchievement.create([
   {:user_id => users[0].id, :achievement_id => achievements[0].id},
   {:user_id => users[1].id, :achievement_id => achievements[0].id},
   {:user_id => users[1].id, :achievement_id => achievements[2].id},
+])
+Note.create([
+  {parent: users[0], content: "user note"},
+  {parent: contacts[0], content: "contact note"},
+  {parent: posts[0], content: "post note"}
 ])
