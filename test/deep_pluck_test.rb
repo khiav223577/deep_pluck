@@ -199,4 +199,34 @@ class DeepPluckTest < Minitest::Test
     ]
     assert_equal expected, Achievement.deep_pluck(:name, :female_users => :name)
   end
+
+  def test_polymorphic
+    expected = [
+      {
+        'name' => 'forest',
+        :tags => [
+          {'name' => 'big'},
+          {'name' => 'expensive'},
+        ],
+      },
+    ]
+    assert_equal expected, Photo.deep_pluck(:name, tags: [:name])
+
+    expected = [
+      {
+        'name' => 'sewer',
+        :tags => [
+          {'name' => 'ugly'}
+        ],
+      },
+      {
+        'name' => 'snowhouse',
+        :tags => [
+          {'name' => 'cold'},
+          {'name' => 'chilly'},
+        ],
+      },
+    ]
+    assert_equal expected, Picture.deep_pluck(:name, tags: [:name])
+  end
 end

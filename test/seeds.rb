@@ -39,6 +39,21 @@ ActiveRecord::Schema.define do
   create_table :achievements, :force => true do |t|
     t.string :name
   end
+
+  create_table :tags, :force => true do |t|
+    t.string :name
+    t.string :taggable_type
+    t.integer :taggable_id
+  end
+
+  create_table :photos, :force => true do |t|
+    t.string :name
+  end
+
+  create_table :pictures, :force => true do |t|
+    t.string :name
+  end
+
 end
 class User < ActiveRecord::Base
   serialize :serialized_attribute, Hash
@@ -88,6 +103,22 @@ class Achievement < ActiveRecord::Base
   end
   has_and_belongs_to_many :users2, class_name: 'User', :join_table => :user_achievements
 end
+
+class Tag < ActiveRecord::Base
+  belongs_to :taggable, polymorphic: true
+end
+
+class Picture < ActiveRecord::Base
+  has_many :tags, as: :taggable
+end
+
+class Photo < ActiveRecord::Base
+  has_many :tags, as: :taggable
+end
+
+Photo.create(name: 'forest', tags: [Tag.new(name: 'big'), Tag.new(name: 'expensive')])
+Picture.create(name: 'sewer', tags: [Tag.new(name: 'ugly')])
+Picture.create(name: 'snowhouse', tags: [Tag.new(name: 'cold'), Tag.new(name: 'chilly')])
 
 users = User.create([
   {:name => 'John', :email => 'john@example.com', :gender => 'male'},
