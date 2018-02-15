@@ -6,7 +6,7 @@ module DeepPluck
     end
 
     def get_hash_data(extra_columns)
-      @active_model.as_json(only: @need_columns + extra_columns)
+      @active_model.as_json(root: false, only: @need_columns + extra_columns)
     end
   end
 end
