@@ -48,6 +48,11 @@ User.deep_pluck(:name, :posts => :title)
 #  {'name' => 'Jeremy', :posts => [{'title' => 'post3'}]}
 # ]
 ```
+### Support plucking at active models
+```rb
+user = User.find_by(name: 'David').deep_pluck(:name, :posts => :title)
+# => {'name' => 'David' , :posts => [{'title' => 'post1'}, {'title' => 'post2'}]}
+```
 
 ### DRY up Rails/ActiveRecord includes when using as_json
 
