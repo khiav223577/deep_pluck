@@ -4,8 +4,9 @@ module DeepPluck
     # ----------------------------------------------------------------
     # ● Initialize
     # ----------------------------------------------------------------
-    def initialize(relation, parent_association_key = nil, parent_model = nil)
+    def initialize(relation, parent_association_key = nil, parent_model = nil, preloaded_model: nil)
       @relation = relation
+      @preloaded_model = preloaded_model
       @parent_association_key = parent_association_key
       @parent_model = parent_model
       @need_columns = []
@@ -118,20 +119,25 @@ module DeepPluck
       )
     end
 
-    public
-
-    def load_data
+    def get_query_columns
       if @parent_model
         parent_reflect = @parent_model.get_reflect(@parent_association_key)
         prev_need_columns = @parent_model.get_foreign_key(parent_reflect, reverse: true, with_table_name: true)
       end
       next_need_columns = @associations.map{|key, _| get_foreign_key(get_reflect(key), with_table_name: true) }.uniq
-      all_need_columns = [*prev_need_columns, *next_need_columns, *@need_columns].uniq(&Helper::TO_KEY_PROC)
+      return [*prev_need_columns, *next_need_columns, *@need_columns].uniq(&Helper::TO_KEY_PROC)
+    end
+
+    public
+
+    def load_data
+      columns = get_query_columns
+      key_columns = columns.map(&Helper::TO_KEY_PROC)
       @relation = yield(@relation) if block_given?
-      @data = @relation.pluck_all(*all_need_columns)
+      @data = @preloaded_model ? [@preloaded_model.as_json(only: key_columns)] : @relation.pluck_all(*columns)
       if @data.size != 0
         # for delete_extra_column_data!
-        @extra_columns = all_need_columns.map(&Helper::TO_KEY_PROC) - @need_columns.map(&Helper::TO_KEY_PROC)
+        @extra_columns = key_columns - @need_columns.map(&Helper::TO_KEY_PROC)
         @associations.each do |key, model|
           set_includes_data(@data, key, model)
         end
