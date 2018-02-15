@@ -210,4 +210,8 @@ class DeepPluckTest < Minitest::Test
     assert_equal post_expected, Post.where(id: 1).deep_pluck(:notes => [:content])
   end
 
+  def test_at_model
+    expected = {'name' => 'Pearl' , :posts => [{'name' => "post4"}, {'name' => "post5"}]}
+    assert_equal(expected, User.where(:name => %w(Pearl)).first.deep_pluck(:name, :posts => [:name]))
+  end
 end
