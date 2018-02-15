@@ -1,3 +1,4 @@
+require 'deep_pluck/preloaded_model'
 require 'deep_pluck/data_combiner'
 module DeepPluck
   class Model
@@ -134,7 +135,7 @@ module DeepPluck
       columns = get_query_columns
       key_columns = columns.map(&Helper::TO_KEY_PROC)
       @relation = yield(@relation) if block_given?
-      @data = @preloaded_model ? [@preloaded_model.as_json(only: key_columns)] : @relation.pluck_all(*columns)
+      @data = @preloaded_model ? [@preloaded_model.get_hash_data(key_columns)] : @relation.pluck_all(*columns)
       if @data.size != 0
         # for delete_extra_column_data!
         @extra_columns = key_columns - @need_columns.map(&Helper::TO_KEY_PROC)
