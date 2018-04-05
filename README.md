@@ -35,7 +35,11 @@ Or install it yourself as:
 ```rb
 User.deep_pluck(:id, :name)
 # SELECT `users`.`id`, `users`.`name` FROM `users` 
-# => [{'id' => 1, 'name' => 'David'}, {'id' => 2, 'name' => 'Jeremy'}]
+# => 
+# [
+#   {'id' => 1, 'name' => 'David'}, 
+#   {'id' => 2, 'name' => 'Jeremy'},
+# ]
 ```
 
 ### Pluck deep into associations
@@ -43,15 +47,34 @@ User.deep_pluck(:id, :name)
 User.deep_pluck(:name, :posts => :title)
 # SELECT `users`.`id`, `users`.`name` FROM `users`
 # SELECT `posts`.`user_id`, `posts`.`title` FROM `posts` WHERE `posts`.`user_id` IN (1, 2)
-# => [
-#  {'name' => 'David' , :posts => [{'title' => 'post1'}, {'title' => 'post2'}]}, 
-#  {'name' => 'Jeremy', :posts => [{'title' => 'post3'}]}
+# => 
+# [
+#  {
+#    'name' => 'David' , 
+#    :posts => [
+#      {'title' => 'post1'}, 
+#      {'title' => 'post2'},
+#    ],
+#  }, 
+#  {
+#    'name' => 'Jeremy', 
+#    :posts => [
+#      {'title' => 'post3'},
+#    ],
+#  },
 # ]
 ```
 ### Support plucking at active models
 ```rb
 user = User.find_by(name: 'David').deep_pluck(:name, :posts => :title)
-# => {'name' => 'David' , :posts => [{'title' => 'post1'}, {'title' => 'post2'}]}
+# =>
+# {
+#   'name' => 'David' , 
+#   :posts => [
+#     {'title' => 'post1'}, 
+#     {'title' => 'post2'},
+#   ],
+# }
 ```
 
 ### DRY up Rails/ActiveRecord includes when using as_json
