@@ -211,7 +211,7 @@ class DeepPluckTest < Minitest::Test
   end
 
   def test_pluck_at_model_with_1_level_deep
-    expected = {'name' => 'Pearl' }
+    expected = {'name' => 'Pearl'}
     assert_equal(expected, User.where(:name => %w(Pearl)).first.deep_pluck(:name))
   end
 
