@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # Specify your gem's dependencies in pluck_all.gemspec
 
-gem "activerecord", "~> 4.2"
+gem "activerecord", "~> 4.2.0"
 gem "pluck_all", "~> 1.2.2"
 
 group :test do
