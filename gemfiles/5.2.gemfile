@@ -1,0 +1,14 @@
+source 'https://rubygems.org'
+
+# Specify your gem's dependencies in pluck_all.gemspec
+
+gem "activerecord", "~> 5.2.0"
+gem "pluck_all", "~> 1.2.2"
+
+group :test do
+  gem "simplecov"
+  gem "codeclimate-test-reporter", "~> 1.0.0"
+end
+
+gemspec :path => "../"
+
