@@ -45,6 +45,9 @@ ActiveRecord::Schema.define do
     t.string :content
   end
 end
+
+ActiveSupport::Dependencies.autoload_paths << File.expand_path('../models/', __FILE__)
+
 class User < ActiveRecord::Base
   serialize :serialized_attribute, Hash
   has_many :posts
