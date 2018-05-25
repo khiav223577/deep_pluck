@@ -45,61 +45,8 @@ ActiveRecord::Schema.define do
     t.string :content
   end
 end
-class User < ActiveRecord::Base
-  serialize :serialized_attribute, Hash
-  has_many :posts
-  if Gem::Version.new(ActiveRecord::VERSION::STRING) < Gem::Version.new('4.0.0')
-    has_many :posts_1_3, :conditions => ['title LIKE ? OR title LIKE ? ', '%post1', '%post3'], :class_name => "Post"
-  else
-    has_many :posts_1_3, -> { where('title LIKE ? OR title LIKE ? ', '%post1', '%post3') }, :class_name => "Post"
-  end
-  has_one :contact
-  has_one :contact2, :foreign_key => :user_id2
-  has_many :notes, as: :parent
-  has_many :user_achievements
-  has_many :achievements, :through => :user_achievements
-  has_and_belongs_to_many :achievements2, class_name: 'Achievement', :join_table => :user_achievements
-end
-class Post < ActiveRecord::Base
-  belongs_to :user
-  has_many :post_comments
-  has_many :notes, as: :parent
-end
-class PostComment < ActiveRecord::Base
-  belongs_to :post
-end
-class Contact < ActiveRecord::Base
-  belongs_to :user
-  has_one :note, as: :parent
-end
-class Contact2 < ActiveRecord::Base
-  self.primary_key = :id2
-  belongs_to :user, :foreign_key => :user_id2
-  has_one :contact2_info, :foreign_key => :contact_id2
-end
-class Contact2Info < ActiveRecord::Base
-  self.primary_key = :id2
-  belongs_to :contact2, :foreign_key => :id2
-end
-class UserAchievement < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :achievement
-end
 
-class Achievement < ActiveRecord::Base
-  has_many :user_achievements
-  has_many :users, :through => :user_achievements
-  if Gem::Version.new(ActiveRecord::VERSION::STRING) < Gem::Version.new('4.0.0')
-    has_many :female_users, :conditions => {:gender => 'female'}, :through => :user_achievements, :foreign_key => "user_id", :source => :user
-  else
-    has_many :female_users, ->{ where(:gender => 'female')}, :through => :user_achievements, :foreign_key => "user_id", :source => :user
-  end
-  has_and_belongs_to_many :users2, class_name: 'User', :join_table => :user_achievements
-end
-
-class Note < ActiveRecord::Base
-  belongs_to :parent, polymorphic: true
-end
+ActiveSupport::Dependencies.autoload_paths << File.expand_path('../models/', __FILE__)
 
 users = User.create([
   {:name => 'John', :email => 'john@example.com', :gender => 'male'},
