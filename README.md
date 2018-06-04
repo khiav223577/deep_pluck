@@ -8,9 +8,7 @@
 
 Allow you to pluck deeply into nested associations without loading a bunch of records.
 
-And DRY up your code when using #as_json.
-
-Works in Rails 3+.
+Support Rails 3.2, 4.2, 5.0, 5.1, 5.2.
 
 
 ## Installation
@@ -32,6 +30,7 @@ Or install it yourself as:
 ## Usage
 
 ### Similar to #pluck method
+
 ```rb
 User.deep_pluck(:id, :name)
 # SELECT `users`.`id`, `users`.`name` FROM `users` 
@@ -42,31 +41,35 @@ User.deep_pluck(:id, :name)
 # ]
 ```
 
-### Pluck deep into associations
+### Pluck attributes from nested associations
+
 ```rb
-User.deep_pluck(:name, :posts => :title)
+User.deep_pluck(:name, 'posts' => :title)
 # SELECT `users`.`id`, `users`.`name` FROM `users`
 # SELECT `posts`.`user_id`, `posts`.`title` FROM `posts` WHERE `posts`.`user_id` IN (1, 2)
 # => 
 # [
 #  {
 #    'name' => 'David' , 
-#    :posts => [
+#    'posts' => [
 #      {'title' => 'post1'}, 
 #      {'title' => 'post2'},
 #    ],
 #  }, 
 #  {
 #    'name' => 'Jeremy', 
-#    :posts => [
+#    'posts' => [
 #      {'title' => 'post3'},
 #    ],
 #  },
 # ]
 ```
-### Support plucking at active models
+
+### Pluck at models
+
 ```rb
-user = User.find_by(name: 'David').deep_pluck(:name, :posts => :title)
+user = User.find_by(name: 'David')
+user.deep_pluck(:name, :posts => :title)
 # =>
 # {
 #   'name' => 'David' , 
@@ -77,7 +80,7 @@ user = User.find_by(name: 'David').deep_pluck(:name, :posts => :title)
 # }
 ```
 
-### DRY up Rails/ActiveRecord includes when using as_json
+### Compare with using `#as_json`
 
 Assume the following relations:
 
@@ -108,7 +111,9 @@ User.where(:name => %w(Pearl Kathenrie)).includes([{:posts => :post_comments}, :
 ```
 It works as expected, but is not very DRY, repeat writing `include`, `posts`, `post_comments` so many times.
 
-You could refactor it with #deep_pluck like:
+Not to mention the huge performace improvement by using #deep_pluck.
+
+You could refactor the example with #deep_pluck:
 ```rb
 User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
   :name, 
@@ -120,9 +125,7 @@ User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
 
 ### Better Performance
 
-#deep_pluck return raw hash data without loading a bunch of records.
-
-In that faster than #as_json, or #select.
+#deep_pluck return raw hash data without loading a bunch of records, so that faster than #as_json, or #select.
 
 The following is the benchmark test on 3 users, 6 posts, where `users` table have 14 columns and `posts` have 6 columns. As it shows, `deep_pluck` is 4x faster than `as_json`.
 
