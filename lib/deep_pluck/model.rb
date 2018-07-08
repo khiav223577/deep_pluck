@@ -10,7 +10,7 @@ module DeepPluck
       @preloaded_model = preloaded_model
       @parent_association_key = parent_association_key
       @parent_model = parent_model
-      @need_columns = []
+      @need_columns = (preloaded_model ? preloaded_model.need_columns : [])
       @associations = {}
     end
 
