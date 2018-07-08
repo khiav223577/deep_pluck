@@ -1,6 +1,10 @@
 ## Change Log
 
-### [upcoming](https://github.com/khiav223577/deep_pluck/compare/v1.1.0...HEAD) 2018/04/05
+### [v1.1.1](https://github.com/khiav223577/deep_pluck/compare/v1.1.0...v1.1.1) 2018/07/08
+- [#26](https://github.com/khiav223577/deep_pluck/pull/26) Fix: `id` may disappear when plucking at model instance (@khiav223577)
+- [#25](https://github.com/khiav223577/deep_pluck/pull/25) Refactor - move models definition to separate files (@khiav223577)
+- [#24](https://github.com/khiav223577/deep_pluck/pull/24) test Rails 5.2 (@khiav223577)
+- [#23](https://github.com/khiav223577/deep_pluck/pull/23) should test both 5.0.x and 5.1.x (@khiav223577)
 - [#22](https://github.com/khiav223577/deep_pluck/pull/22) #deep_pluck at active model without plucking deeply will cause ArgumentError (@khiav223577)
 - [#20](https://github.com/khiav223577/deep_pluck/pull/20) [ENHANCE] Eliminate Extra Select Loop in Hash Lookup (@berniechiu)
 
