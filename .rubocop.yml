@@ -788,7 +788,8 @@ Style/Next:
 Style/NilComparison:
   Description: 'Prefer x.nil? to x == nil.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
-  Enabled: false
+  EnforcedStyle: comparison
+  Enabled: true
 
 Style/NonNilCheck:
   # With `IncludeSemanticChanges` set to `true`, this cop reports offenses for
@@ -800,7 +801,7 @@ Style/NonNilCheck:
   Description: 'Checks for redundant nil checks.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-non-nil-checks'
   IncludeSemanticChanges: true
-  Enabled: true
+  Enabled: false
 
 Style/Not:
   Description: 'Use ! instead of not.'
@@ -904,7 +905,7 @@ Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-r'
   EnforcedStyle: slashes
-  AllowInnerSlashes: true
+  AllowInnerSlashes: false
   Enabled: true
 
 Layout/RescueEnsureAlignment:
