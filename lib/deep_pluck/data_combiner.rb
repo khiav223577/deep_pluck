@@ -12,7 +12,7 @@ module DeepPluck
       private
 
       def make_data_hash(collection, parent, primary_key, column_name)
-        return parent.map{|s| [s[primary_key], s]}.to_h if !collection
+        return parent.map{|s| [s[primary_key], s] }.to_h if !collection
         hash = {}
         parent.each do |model_hash|
           key = model_hash[primary_key]

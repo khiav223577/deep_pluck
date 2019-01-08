@@ -21,7 +21,7 @@ module DeepPluck
       @relation.klass.reflect_on_association(association_key.to_sym) || # add to_sym since rails 3 only support symbol
         fail(ActiveRecord::ConfigurationError, "ActiveRecord::ConfigurationError: Association named \
           '#{association_key}' was not found on #{@relation.klass.name}; perhaps you misspelled it?"
-        )
+      )
     end
 
     def with_conditions(reflect, relation)
@@ -92,7 +92,7 @@ module DeepPluck
     def do_query(parent, reflect, relation)
       parent_key = get_foreign_key(reflect)
       relation_key = get_foreign_key(reflect, reverse: true, with_table_name: true)
-      ids = parent.map{|s| s[parent_key]}
+      ids = parent.map{|s| s[parent_key] }
       ids.uniq!
       ids.compact!
       relation = with_conditions(reflect, relation)
