@@ -26,6 +26,13 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}){|f| File.basename(f) }
   spec.require_paths = ['lib']
+  spec.metadata      = {
+    'homepage_uri'      => 'https://github.com/khiav223577/deep_pluck',
+    'changelog_uri'     => 'https://github.com/khiav223577/deep_pluck/blob/master/CHANGELOG.md',
+    'source_code_uri'   => 'https://github.com/khiav223577/deep_pluck',
+    'documentation_uri' => 'https://www.rubydoc.info/gems/deep_pluck',
+    'bug_tracker_uri'   => 'https://github.com/khiav223577/deep_pluck/issues',
+  }
 
   spec.add_development_dependency 'bundler', '>= 1.17', '< 3.x'
   spec.add_development_dependency 'rake', '~> 12.0'
