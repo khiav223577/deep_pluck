@@ -8,7 +8,7 @@
 
 Allow you to pluck deeply into nested associations without loading a bunch of records.
 
-Support Rails 3.2, 4.2, 5.0, 5.1, 5.2.
+Support Rails 3.2, 4.2, 5.0, 5.1, 5.2, 6.0.
 
 
 ## Installation
@@ -33,10 +33,10 @@ Or install it yourself as:
 
 ```rb
 User.deep_pluck(:id, :name)
-# SELECT `users`.`id`, `users`.`name` FROM `users` 
-# => 
+# SELECT `users`.`id`, `users`.`name` FROM `users`
+# =>
 # [
-#   {'id' => 1, 'name' => 'David'}, 
+#   {'id' => 1, 'name' => 'David'},
 #   {'id' => 2, 'name' => 'Jeremy'},
 # ]
 ```
@@ -47,17 +47,17 @@ User.deep_pluck(:id, :name)
 User.deep_pluck(:name, 'posts' => :title)
 # SELECT `users`.`id`, `users`.`name` FROM `users`
 # SELECT `posts`.`user_id`, `posts`.`title` FROM `posts` WHERE `posts`.`user_id` IN (1, 2)
-# => 
+# =>
 # [
 #  {
-#    'name' => 'David' , 
+#    'name' => 'David' ,
 #    'posts' => [
-#      {'title' => 'post1'}, 
+#      {'title' => 'post1'},
 #      {'title' => 'post2'},
 #    ],
-#  }, 
+#  },
 #  {
-#    'name' => 'Jeremy', 
+#    'name' => 'Jeremy',
 #    'posts' => [
 #      {'title' => 'post3'},
 #    ],
@@ -72,9 +72,9 @@ user = User.find_by(name: 'David')
 user.deep_pluck(:name, :posts => :title)
 # =>
 # {
-#   'name' => 'David' , 
+#   'name' => 'David' ,
 #   :posts => [
-#     {'title' => 'post1'}, 
+#     {'title' => 'post1'},
 #     {'title' => 'post2'},
 #   ],
 # }
@@ -92,10 +92,10 @@ And the following #as_json example:
 ```rb
 User.where(:name => %w(Pearl Kathenrie)).includes([{:posts => :post_comments}, :contact]).as_json({
   :root => false,
-  :only => [:name, :email], 
+  :only => [:name, :email],
   :include => {
     'posts' => {
-      :only => :name, 
+      :only => :name,
       :include => {
         'post_comments' => {
           :only => :comment,
@@ -116,9 +116,9 @@ Not to mention the huge performace improvement by using #deep_pluck.
 You could refactor the example with #deep_pluck:
 ```rb
 User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
-  :name, 
-  :email, 
-  'posts' => [:name, 'post_comments' => :comment], 
+  :name,
+  :email,
+  'posts' => [:name, 'post_comments' => :comment],
   'contact' => :address,
 )
 ```
