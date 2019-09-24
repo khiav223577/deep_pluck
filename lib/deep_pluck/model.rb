@@ -130,7 +130,7 @@ module DeepPluck
     end
 
     def pluck_values(columns, key_columns)
-      return @relation.as_json(only: key_columns) if @relation.loaded
+      return @relation.as_json(root: false, only: key_columns) if @relation.loaded
 
       includes_values = @relation.includes_values
       @relation.includes_values = []
