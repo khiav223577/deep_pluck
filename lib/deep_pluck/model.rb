@@ -6,7 +6,16 @@ module DeepPluck
     # ● Initialize
     # ----------------------------------------------------------------
     def initialize(relation, parent_association_key = nil, parent_model = nil, need_columns: [])
-      @relation = relation
+      if relation.is_a?(ActiveRecord::Base)
+        @model = relation
+        @relation = nil
+        @klass = @model.class
+      else
+        @model = nil
+        @relation = relation
+        @klass = @relation.klass
+      end
+
       @parent_association_key = parent_association_key
       @parent_model = parent_model
       @need_columns = need_columns
@@ -17,9 +26,9 @@ module DeepPluck
     # ● Reader
     # ----------------------------------------------------------------
     def get_reflect(association_key)
-      @relation.klass.reflect_on_association(association_key.to_sym) || # add to_sym since rails 3 only support symbol
+      @klass.reflect_on_association(association_key.to_sym) || # add to_sym since rails 3 only support symbol
         fail(ActiveRecord::ConfigurationError, "ActiveRecord::ConfigurationError: Association named \
-          '#{association_key}' was not found on #{@relation.klass.name}; perhaps you misspelled it?"
+          '#{association_key}' was not found on #{@klass.name}; perhaps you misspelled it?"
       )
     end
 
@@ -138,13 +147,19 @@ module DeepPluck
       return result
     end
 
+    def load_data_from_model_or_relation(key_columns, columns)
+      return [@model.as_json(root: false, only: key_columns)] if @model
+      return @relation.as_json(root: false, only: key_columns) if @relation.loaded
+      return pluck_values(columns)
+    end
+
     public
 
     def load_data
       columns = get_query_columns
       key_columns = columns.map(&Helper::TO_KEY_PROC)
       @relation = yield(@relation) if block_given?
-      @data = @relation.loaded ? @relation.as_json(root: false, only: key_columns) : pluck_values(columns)
+      @data = load_data_from_model_or_relation(key_columns, columns)
       if @data.size != 0
         # for delete_extra_column_data!
         @extra_columns = key_columns - @need_columns.map(&Helper::TO_KEY_PROC)
