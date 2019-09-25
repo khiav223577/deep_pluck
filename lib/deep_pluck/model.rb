@@ -128,9 +128,7 @@ module DeepPluck
       return [*prev_need_columns, *next_need_columns, *@need_columns].uniq(&Helper::TO_KEY_PROC)
     end
 
-    def pluck_values(columns, key_columns)
-      return @relation.as_json(root: false, only: key_columns) if @relation.loaded
-
+    def pluck_values(columns)
       includes_values = @relation.includes_values
       @relation.includes_values = []
 
@@ -146,7 +144,7 @@ module DeepPluck
       columns = get_query_columns
       key_columns = columns.map(&Helper::TO_KEY_PROC)
       @relation = yield(@relation) if block_given?
-      @data = pluck_values(columns, key_columns)
+      @data = @relation.loaded ? @relation.as_json(root: false, only: key_columns) : pluck_values(columns)
       if @data.size != 0
         # for delete_extra_column_data!
         @extra_columns = key_columns - @need_columns.map(&Helper::TO_KEY_PROC)
