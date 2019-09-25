@@ -1,16 +1,24 @@
-require 'deep_pluck/preloaded_model'
 require 'deep_pluck/data_combiner'
+
 module DeepPluck
   class Model
     # ----------------------------------------------------------------
     # ● Initialize
     # ----------------------------------------------------------------
-    def initialize(relation, parent_association_key = nil, parent_model = nil, preloaded_model: nil)
-      @relation = relation
-      @preloaded_model = preloaded_model
+    def initialize(relation, parent_association_key = nil, parent_model = nil, need_columns: [])
+      if relation.is_a?(ActiveRecord::Base)
+        @model = relation
+        @relation = nil
+        @klass = @model.class
+      else
+        @model = nil
+        @relation = relation
+        @klass = @relation.klass
+      end
+
       @parent_association_key = parent_association_key
       @parent_model = parent_model
-      @need_columns = (preloaded_model ? preloaded_model.need_columns : [])
+      @need_columns = need_columns
       @associations = {}
     end
 
@@ -18,9 +26,9 @@ module DeepPluck
     # ● Reader
     # ----------------------------------------------------------------
     def get_reflect(association_key)
-      @relation.klass.reflect_on_association(association_key.to_sym) || # add to_sym since rails 3 only support symbol
+      @klass.reflect_on_association(association_key.to_sym) || # add to_sym since rails 3 only support symbol
         fail(ActiveRecord::ConfigurationError, "ActiveRecord::ConfigurationError: Association named \
-          '#{association_key}' was not found on #{@relation.klass.name}; perhaps you misspelled it?"
+          '#{association_key}' was not found on #{@klass.name}; perhaps you misspelled it?"
       )
     end
 
@@ -129,9 +137,7 @@ module DeepPluck
       return [*prev_need_columns, *next_need_columns, *@need_columns].uniq(&Helper::TO_KEY_PROC)
     end
 
-    def pluck_values(columns, key_columns)
-      return @relation.as_json(root: false, only: key_columns) if @relation.loaded
-
+    def pluck_values(columns)
       includes_values = @relation.includes_values
       @relation.includes_values = []
 
@@ -141,13 +147,18 @@ module DeepPluck
       return result
     end
 
+    def loaded_models
+      return [@model] if @model
+      return @relation if @relation.loaded
+    end
+
     public
 
     def load_data
       columns = get_query_columns
       key_columns = columns.map(&Helper::TO_KEY_PROC)
       @relation = yield(@relation) if block_given?
-      @data = @preloaded_model ? [@preloaded_model.get_hash_data(key_columns)] : pluck_values(columns, key_columns)
+      @data = loaded_models ? loaded_models.as_json(root: false, only: key_columns) : pluck_values(columns)
       if @data.size != 0
         # for delete_extra_column_data!
         @extra_columns = key_columns - @need_columns.map(&Helper::TO_KEY_PROC)

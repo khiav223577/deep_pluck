@@ -16,8 +16,7 @@ class ActiveRecord::Base
 
   def deep_pluck(*args)
     hash_args, other_args = args.partition{|s| s.is_a?(Hash) }
-    preloaded_model = DeepPluck::PreloadedModel.new(self, other_args)
-    model = DeepPluck::Model.new(self.class.where(id: id), preloaded_model: preloaded_model)
+    model = DeepPluck::Model.new(self, need_columns: other_args)
     model.add(*hash_args) if hash_args.any?
     return model.load_all.first
   end
