@@ -1,16 +1,15 @@
-require 'deep_pluck/preloaded_model'
 require 'deep_pluck/data_combiner'
+
 module DeepPluck
   class Model
     # ----------------------------------------------------------------
     # ● Initialize
     # ----------------------------------------------------------------
-    def initialize(relation, parent_association_key = nil, parent_model = nil, preloaded_model: nil)
+    def initialize(relation, parent_association_key = nil, parent_model = nil, need_columns: [])
       @relation = relation
-      @preloaded_model = preloaded_model
       @parent_association_key = parent_association_key
       @parent_model = parent_model
-      @need_columns = (preloaded_model ? preloaded_model.need_columns : [])
+      @need_columns = need_columns
       @associations = {}
     end
 
@@ -147,7 +146,7 @@ module DeepPluck
       columns = get_query_columns
       key_columns = columns.map(&Helper::TO_KEY_PROC)
       @relation = yield(@relation) if block_given?
-      @data = @preloaded_model ? [@preloaded_model.get_hash_data(key_columns)] : pluck_values(columns, key_columns)
+      @data = pluck_values(columns, key_columns)
       if @data.size != 0
         # for delete_extra_column_data!
         @extra_columns = key_columns - @need_columns.map(&Helper::TO_KEY_PROC)
