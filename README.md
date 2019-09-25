@@ -90,7 +90,7 @@ Assume the following relations:
 
 And the following #as_json example:
 ```rb
-User.where(:name => %w(Pearl Kathenrie)).includes([{:posts => :post_comments}, :contact]).as_json({
+User.where(:name => %w(Pearl Doggy)).includes([{:posts => :post_comments}, :contact]).as_json({
   :root => false,
   :only => [:name, :email],
   :include => {
@@ -115,7 +115,7 @@ Not to mention the huge performace improvement by using #deep_pluck.
 
 You could refactor the example with #deep_pluck:
 ```rb
-User.where(:name => %w(Pearl Kathenrie)).deep_pluck(
+User.where(:name => %w(Pearl Doggy)).deep_pluck(
   :name,
   :email,
   'posts' => [:name, 'post_comments' => :comment],

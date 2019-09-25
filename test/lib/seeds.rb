@@ -51,7 +51,7 @@ ActiveSupport::Dependencies.autoload_paths << File.expand_path('../models/', __F
 users = User.create([
   { name: 'John', email: 'john@example.com', gender: 'male' },
   { name: 'Pearl', email: 'pearl@example.com', gender: 'female', serialized_attribute: { testing: true, deep: { deep: :deep }}},
-  { name: 'Kathenrie', email: 'kathenrie@example.com', gender: 'female' },
+  { name: 'Doggy', email: 'kathenrie@example.com', gender: 'female' },
 ])
 posts = Post.create([
   { name: 'post1', title: "John's post1", user_id: users[0].id },
@@ -59,7 +59,7 @@ posts = Post.create([
   { name: 'post3', title: "John's post3", user_id: users[0].id },
   { name: 'post4', title: "Pearl's post1", user_id: users[1].id },
   { name: 'post5', title: "Pearl's post2", user_id: users[1].id },
-  { name: 'post6', title: "Kathenrie's post1", user_id: users[2].id },
+  { name: 'post6', title: "Doggy's post1", user_id: users[2].id },
 ])
 PostComment.create([
   { post_id: posts[2].id, comment: 'WTF?' },
@@ -70,12 +70,12 @@ PostComment.create([
 contacts = Contact.create([
   { address: "John's Home", phone_number: '0911666888', user_id: users[0].id },
   { address: "Pearl's Home", phone_number: '1011-0404-934', user_id: users[1].id },
-  { address: "Kathenrie's Home", phone_number: '02-254421', user_id: users[2].id },
+  { address: "Doggy's Home", phone_number: '02-254421', user_id: users[2].id },
 ])
 contact2 = Contact2.create([
   { address: "John's Home2", phone_number: '0911666888', user_id2: users[0].id },
   { address: "Pearl's Home2", phone_number: '1011-0404-934', user_id2: users[1].id },
-  { address: "Kathenrie's Home2", phone_number: '02-254421', user_id2: users[2].id },
+  { address: "Doggy's Home2", phone_number: '02-254421', user_id2: users[2].id },
 ])
 Contact2Info.create([
   { info: 'info1', contact_id2: contact2[0].id },
