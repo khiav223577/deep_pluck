@@ -1,5 +1,12 @@
 ## Change Log
 
+### [v1.1.2](https://github.com/khiav223577/deep_pluck/compare/v1.1.1...v1.1.2) 2019/09/25
+- [#32](https://github.com/khiav223577/deep_pluck/pull/32) Remove unneeded `PreloadedModel` (@khiav223577)
+- [#31](https://github.com/khiav223577/deep_pluck/pull/31) Support Rails 6.0 (@khiav223577)
+- [#30](https://github.com/khiav223577/deep_pluck/pull/30) Lock sqlite3 version to 1.3.x (@khiav223577)
+- [#28](https://github.com/khiav223577/deep_pluck/pull/28) Fix: broken test cases after bundler 2.0 was released (@khiav223577)
+- [#27](https://github.com/khiav223577/deep_pluck/pull/27) Remove deprecated codeclimate-test-reporter gem and update travis config (@khiav223577)
+
 ### [v1.1.1](https://github.com/khiav223577/deep_pluck/compare/v1.1.0...v1.1.1) 2018/07/08
 - [#26](https://github.com/khiav223577/deep_pluck/pull/26) Fix: `id` may disappear when plucking at model instance (@khiav223577)
 - [#25](https://github.com/khiav223577/deep_pluck/pull/25) Refactor - move models definition to separate files (@khiav223577)
@@ -12,7 +19,7 @@
 - [#19](https://github.com/khiav223577/deep_pluck/pull/19) Support deep_pluck at active model (@khiav223577)
 - [#18](https://github.com/khiav223577/deep_pluck/pull/18) Add rubocop and Improve code quality (@khiav223577)
 
-### [v1.0.3](https://github.com/khiav223577/deep_pluck/compare/v1.0.0...v1.0.3) 2017/06/30
+### [v1.0.3](https://github.com/khiav223577/deep_pluck/compare/v1.0.2...v1.0.3) 2017/06/30
 - [#15](https://github.com/khiav223577/deep_pluck/pull/15) test deep_pluck in rails 5.1.x (@khiav223577)
 - [#14](https://github.com/khiav223577/deep_pluck/pull/14) Handle polymorphic associations correctly. (@Bogadon)
 
@@ -42,6 +49,6 @@
 ### [v0.0.3](https://github.com/khiav223577/deep_pluck/compare/v0.0.2...v0.0.3) 2017/03/06
 - [#3](https://github.com/khiav223577/deep_pluck/pull/3) support more than two level (@khiav223577)
 
-### v0.0.2 2017/03/06
+### [v0.0.2](https://github.com/khiav223577/deep_pluck/compare/v0.0.1...v0.0.2) 2017/03/06
 - [#2](https://github.com/khiav223577/deep_pluck/pull/2) The result of has_one association should not be array (@khiav223577)
 - [#1](https://github.com/khiav223577/deep_pluck/pull/1) deep pluck (@khiav223577)
