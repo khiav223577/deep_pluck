@@ -147,10 +147,9 @@ module DeepPluck
       return result
     end
 
-    def load_data_from_model_or_relation(key_columns, columns)
-      return [@model.as_json(root: false, only: key_columns)] if @model
-      return @relation.as_json(root: false, only: key_columns) if @relation.loaded
-      return pluck_values(columns)
+    def loaded_models
+      return [@model] if @model
+      return @relation if @relation.loaded
     end
 
     public
@@ -159,7 +158,7 @@ module DeepPluck
       columns = get_query_columns
       key_columns = columns.map(&Helper::TO_KEY_PROC)
       @relation = yield(@relation) if block_given?
-      @data = load_data_from_model_or_relation(key_columns, columns)
+      @data = loaded_models ? loaded_models.as_json(root: false, only: key_columns) : pluck_values(columns)
       if @data.size != 0
         # for delete_extra_column_data!
         @extra_columns = key_columns - @need_columns.map(&Helper::TO_KEY_PROC)
