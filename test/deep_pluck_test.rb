@@ -30,10 +30,12 @@ class DeepPluckTest < Minitest::Test
       { 'name' => 'Pearl', :posts => [{ 'name' => 'post4' }, { 'name' => 'post5' }] },
       { 'name' => 'Doggy', :posts => [{ 'name' => 'post6' }] },
     ], User.where(name: %w[Pearl Doggy]).deep_pluck(:name, posts: [:name])
+
     assert_equal [
       { 'name' => 'John', :contact => { 'address' => "John's Home" }},
       { 'name' => 'Pearl', :contact => { 'address' => "Pearl's Home" }},
-    ], User.where(name: %w[John Pearl]).deep_pluck(:name, contact: :address)
+      { 'name' => 'Catty' },
+    ], User.where(name: %w[John Pearl Catty]).deep_pluck(:name, contact: :address)
   end
 
   def test_3_level_deep
