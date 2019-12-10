@@ -5,8 +5,10 @@ ActiveRecord::Schema.define do
     t.string :name
     t.string :email
     t.string :gender
+    t.integer :school_id
     t.text :serialized_attribute
   end
+
   create_table :posts, force: true do |t|
     t.integer :user_id
     t.string :name
@@ -44,12 +46,20 @@ ActiveRecord::Schema.define do
     t.string :parent_type
     t.string :content
   end
+
+  create_table :schools, force: true do |t|
+    t.string :name
+  end
 end
 
 ActiveSupport::Dependencies.autoload_paths << File.expand_path('../models/', __FILE__)
 
+schools = School.create([
+  { name: 'high school 01' },
+])
+
 users = User.create([
-  { name: 'John', email: 'john@example.com', gender: 'male' },
+  { name: 'John', email: 'john@example.com', gender: 'male', school: schools[0] },
   { name: 'Pearl', email: 'pearl@example.com', gender: 'female', serialized_attribute: { testing: true, deep: { deep: :deep }}},
   { name: 'Doggy', email: 'kathenrie@example.com', gender: 'female' },
 ])
