@@ -57,6 +57,7 @@ ActiveRecord::Schema.define do
   end
 end
 
+$optional_true = ActiveRecord::VERSION::MAJOR < 5 ? {} : { optional: true }
 ActiveSupport::Dependencies.autoload_paths << File.expand_path('../models/', __FILE__)
 
 cities = City.create([

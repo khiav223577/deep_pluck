@@ -14,5 +14,5 @@ class User < ActiveRecord::Base
   has_many :achievements, through: :user_achievements
   has_and_belongs_to_many :achievements2, class_name: 'Achievement', join_table: :user_achievements
 
-  belongs_to :school, optional: true
+  belongs_to :school, $optional_true
 end
