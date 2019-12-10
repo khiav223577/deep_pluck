@@ -71,6 +71,7 @@ users = User.create([
   { name: 'John', email: 'john@example.com', gender: 'male', school: schools[0] },
   { name: 'Pearl', email: 'pearl@example.com', gender: 'female', serialized_attribute: { testing: true, deep: { deep: :deep }}},
   { name: 'Doggy', email: 'kathenrie@example.com', gender: 'female' },
+  { name: 'Catty', email: 'catherine@example.com', gender: 'female' },
 ])
 posts = Post.create([
   { name: 'post1', title: "John's post1", user_id: users[0].id },
