@@ -49,13 +49,22 @@ ActiveRecord::Schema.define do
 
   create_table :schools, force: true do |t|
     t.string :name
+    t.integer :city_id
+  end
+
+  create_table :cities, force: true do |t|
+    t.string :name
   end
 end
 
 ActiveSupport::Dependencies.autoload_paths << File.expand_path('../models/', __FILE__)
 
+cities = City.create([
+  { name: 'Taipei' },
+])
+
 schools = School.create([
-  { name: 'high school 01' },
+  { name: 'high school 01', city: cities[0] },
 ])
 
 users = User.create([
