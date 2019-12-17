@@ -1,3 +1,4 @@
+require 'deep_pluck/utils/unscope_where'
 require 'deep_pluck/data_combiner'
 
 module DeepPluck
@@ -63,7 +64,7 @@ module DeepPluck
     end
 
     def get_association_scope(reflect)
-      reflect.association_class.new({}, reflect).association_scope.unscope(:where)
+      DeepPluck::Utils.unscope_where(reflect.association_class.new({}, reflect).association_scope)
     end
 
     def use_association_to_query?(reflect)
