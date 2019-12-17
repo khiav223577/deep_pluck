@@ -65,6 +65,10 @@ module DeepPluck
       reflect.association_class.new({}, reflect).scope.unscope(:where)
     end
 
+    def use_association_to_query?(reflect)
+      reflect.through_reflection && reflect.chain.first.macro == :has_one
+    end
+
     # ----------------------------------------------------------------
     # ● Contruction OPs
     # ----------------------------------------------------------------
@@ -111,7 +115,7 @@ module DeepPluck
       query = { relation_key => ids }
       query[reflect.type] = reflect.active_record.to_s if reflect.type
 
-      return get_association_scope(reflect).where(query) if reflect.chain.size > 1
+      return get_association_scope(reflect).where(query) if reflect.through_reflection && reflect.chain.first.macro == :has_one
       return relation.joins(get_join_table(reflect)).where(query)
     end
 
