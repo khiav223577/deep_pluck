@@ -61,6 +61,10 @@ module DeepPluck
       return key.to_s # key may be symbol if specify foreign_key in association options
     end
 
+    def get_association_scope(reflect)
+      reflect.association_class.new({}, reflect).scope.unscope(:where)
+    end
+
     # ----------------------------------------------------------------
     # ● Contruction OPs
     # ----------------------------------------------------------------
@@ -106,6 +110,8 @@ module DeepPluck
       relation = with_conditions(reflect, relation)
       query = { relation_key => ids }
       query[reflect.type] = reflect.active_record.to_s if reflect.type
+
+      return get_association_scope(reflect).where(query) if reflect.chain.size > 1
       return relation.joins(get_join_table(reflect)).where(query)
     end
 
