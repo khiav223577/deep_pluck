@@ -78,7 +78,7 @@ module DeepPluck
     private
 
     def add_need_column(column)
-      @need_columns << column.to_s
+      @need_columns << column
     end
 
     def add_association(hash)
