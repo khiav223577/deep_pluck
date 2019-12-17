@@ -63,7 +63,7 @@ module DeepPluck
     end
 
     def get_association_scope(reflect)
-      reflect.association_class.new({}, reflect).scope.unscope(:where)
+      reflect.association_class.new({}, reflect).association_scope.unscope(:where)
     end
 
     def use_association_to_query?(reflect)
