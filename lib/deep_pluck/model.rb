@@ -118,7 +118,7 @@ module DeepPluck
       query = { relation_key => ids }
       query[reflect.type] = reflect.active_record.to_s if reflect.type
 
-      return get_association_scope(reflect).where(query) if reflect.through_reflection && reflect.chain.first.macro == :has_one
+      return get_association_scope(reflect).where(query) if use_association_to_query?(reflect)
       return relation.joins(get_join_table(reflect)).where(query)
     end
 
