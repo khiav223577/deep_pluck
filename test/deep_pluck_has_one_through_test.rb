@@ -8,6 +8,6 @@ class DeepPluckHasOneThroughTest < Minitest::Test
     assert_equal [
       { 'name' => 'John', 'city' => { 'name' => 'Taipei' } },
       { 'name' => 'Pearl' },
-    ], User.where(name: %w[John, Pearl]).deep_pluck(:name, 'city' => :name)
+    ], User.where(name: %w[John Pearl]).deep_pluck(:name, 'city' => :name)
   end
 end
