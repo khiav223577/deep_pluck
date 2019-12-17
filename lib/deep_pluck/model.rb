@@ -51,6 +51,7 @@ module DeepPluck
     end
 
     def get_foreign_key(reflect, reverse: false, with_table_name: false)
+      reflect = reflect.chain.last
       if reverse and (table_name = get_join_table(reflect)) # reverse = parent
         key = reflect.chain.last.foreign_key
       else
