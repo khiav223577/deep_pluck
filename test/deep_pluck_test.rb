@@ -30,10 +30,12 @@ class DeepPluckTest < Minitest::Test
       { 'name' => 'Pearl', :posts => [{ 'name' => 'post4' }, { 'name' => 'post5' }] },
       { 'name' => 'Doggy', :posts => [{ 'name' => 'post6' }] },
     ], User.where(name: %w[Pearl Doggy]).deep_pluck(:name, posts: [:name])
+
     assert_equal [
       { 'name' => 'John', :contact => { 'address' => "John's Home" }},
       { 'name' => 'Pearl', :contact => { 'address' => "Pearl's Home" }},
-    ], User.where(name: %w[John Pearl]).deep_pluck(:name, contact: :address)
+      { 'name' => 'Catty' },
+    ], User.where(name: %w[John Pearl Catty]).deep_pluck(:name, contact: :address)
   end
 
   def test_3_level_deep
@@ -63,6 +65,7 @@ class DeepPluckTest < Minitest::Test
       { 'name' => 'John', :achievements => [{ 'name' => 'achievement1' }] },
       { 'name' => 'Pearl', :achievements => [{ 'name' => 'achievement1' }, { 'name' => 'achievement3' }] },
       { 'name' => 'Doggy', :achievements => [] },
+      { 'name' => 'Catty', :achievements => [] },
     ]
     assert_equal expected, User.deep_pluck(:name, achievements: :name)
     expected = [
@@ -78,6 +81,7 @@ class DeepPluckTest < Minitest::Test
       { 'name' => 'John', :achievements2 => [{ 'name' => 'achievement1' }] },
       { 'name' => 'Pearl', :achievements2 => [{ 'name' => 'achievement1' }, { 'name' => 'achievement3' }] },
       { 'name' => 'Doggy', :achievements2 => [] },
+      { 'name' => 'Catty', :achievements2 => [] },
     ]
     assert_equal expected, User.deep_pluck(:name, achievements2: :name)
     expected = [
@@ -187,6 +191,7 @@ class DeepPluckTest < Minitest::Test
       { 'name' => 'John', :posts_1_3 => [{ 'title' => "John's post1" }, { 'title' => "John's post3" }] },
       { 'name' => 'Pearl', :posts_1_3 => [{ 'title' => "Pearl's post1" }] },
       { 'name' => 'Doggy', :posts_1_3 => [{ 'title' => "Doggy's post1" }] },
+      { 'name' => 'Catty', :posts_1_3 => [] },
     ], User.deep_pluck(:name, posts_1_3: [:title])
   end
 

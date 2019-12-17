@@ -1,3 +1,5 @@
+require 'rails_compatibility'
+require 'rails_compatibility/unscope_where'
 require 'deep_pluck/data_combiner'
 
 module DeepPluck
@@ -51,6 +53,7 @@ module DeepPluck
     end
 
     def get_foreign_key(reflect, reverse: false, with_table_name: false)
+      reflect = reflect.chain.last
       if reverse and (table_name = get_join_table(reflect)) # reverse = parent
         key = reflect.chain.last.foreign_key
       else
@@ -61,6 +64,14 @@ module DeepPluck
       return key.to_s # key may be symbol if specify foreign_key in association options
     end
 
+    def get_association_scope(reflect)
+      RailsCompatibility.unscope_where(reflect.association_class.new({}, reflect).send(:association_scope))
+    end
+
+    def use_association_to_query?(reflect)
+      reflect.through_reflection && reflect.chain.first.macro == :has_one
+    end
+
     # ----------------------------------------------------------------
     # ● Contruction OPs
     # ----------------------------------------------------------------
@@ -68,7 +79,7 @@ module DeepPluck
     private
 
     def add_need_column(column)
-      @need_columns << column.to_s
+      @need_columns << column
     end
 
     def add_association(hash)
@@ -106,6 +117,8 @@ module DeepPluck
       relation = with_conditions(reflect, relation)
       query = { relation_key => ids }
       query[reflect.type] = reflect.active_record.to_s if reflect.type
+
+      return get_association_scope(reflect).where(query) if use_association_to_query?(reflect)
       return relation.joins(get_join_table(reflect)).where(query)
     end
 
@@ -113,7 +126,7 @@ module DeepPluck
       reflect = get_reflect(column_name)
       reverse = !reflect.belongs_to?
       foreign_key = get_foreign_key(reflect, reverse: reverse)
-      primary_key = get_primary_key(reflect)
+      primary_key = get_foreign_key(reflect, reverse: !reverse)
       children = model.load_data{|relation| do_query(parent, reflect, relation) }
       # reverse = false: Child.where(:id => parent.pluck(:child_id))
       # reverse = true : Child.where(:parent_id => parent.pluck(:id))
