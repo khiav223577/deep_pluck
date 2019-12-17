@@ -1,5 +1,8 @@
 ## Change Log
 
+### [v1.1.3](https://github.com/khiav223577/deep_pluck/compare/v1.1.2...v1.1.3) 2019/12/17
+- [#34](https://github.com/khiav223577/deep_pluck/pull/34) Support for plucking directly on a has_one through association (@khiav223577)
+
 ### [v1.1.2](https://github.com/khiav223577/deep_pluck/compare/v1.1.1...v1.1.2) 2019/09/25
 - [#32](https://github.com/khiav223577/deep_pluck/pull/32) Remove unneeded `PreloadedModel` (@khiav223577)
 - [#31](https://github.com/khiav223577/deep_pluck/pull/31) Support Rails 6.0 (@khiav223577)
@@ -51,4 +54,6 @@
 
 ### [v0.0.2](https://github.com/khiav223577/deep_pluck/compare/v0.0.1...v0.0.2) 2017/03/06
 - [#2](https://github.com/khiav223577/deep_pluck/pull/2) The result of has_one association should not be array (@khiav223577)
+
+### v0.0.1 2017/03/04
 - [#1](https://github.com/khiav223577/deep_pluck/pull/1) deep pluck (@khiav223577)
