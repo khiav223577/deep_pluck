@@ -119,7 +119,7 @@ module DeepPluck
       reflect = get_reflect(column_name)
       reverse = !reflect.belongs_to?
       foreign_key = get_foreign_key(reflect, reverse: reverse)
-      primary_key = get_primary_key(reflect)
+      primary_key = get_foreign_key(reflect, reverse: !reverse)
       children = model.load_data{|relation| do_query(parent, reflect, relation) }
       # reverse = false: Child.where(:id => parent.pluck(:child_id))
       # reverse = true : Child.where(:parent_id => parent.pluck(:id))
