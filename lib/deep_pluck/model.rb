@@ -1,4 +1,5 @@
-require 'deep_pluck/utils/unscope_where'
+require 'rails_compatibility'
+require 'rails_compatibility/unscope_where'
 require 'deep_pluck/data_combiner'
 
 module DeepPluck
@@ -64,7 +65,7 @@ module DeepPluck
     end
 
     def get_association_scope(reflect)
-      DeepPluck::Utils.unscope_where(reflect.association_class.new({}, reflect).send(:association_scope))
+      RailsCompatibility.unscope_where(reflect.association_class.new({}, reflect).send(:association_scope))
     end
 
     def use_association_to_query?(reflect)
