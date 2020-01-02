@@ -6,6 +6,7 @@ language: ruby
 rvm:
   - 2.2
   - 2.6
+  - 2.7
 gemfile:
   - gemfiles/3.2.gemfile
   - gemfiles/4.2.gemfile
@@ -19,6 +20,8 @@ matrix:
       rvm: 2.6
     - gemfile: gemfiles/4.0.gemfile
       rvm: 2.6
+    - gemfile: gemfiles/4.0.gemfile
+      rvm: 2.7
     - gemfile: gemfiles/6.0.gemfile
       rvm: 2.2
 before_install:
