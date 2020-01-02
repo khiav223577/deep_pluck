@@ -25,8 +25,10 @@ matrix:
     - gemfile: gemfiles/6.0.gemfile
       rvm: 2.2
 before_install:
-  - gem i rubygems-update -v '<3' && update_rubygems
-  - gem install bundler -v 1.17.3
+  - if [`ruby -e 'exit(RUBY_VERSION.to_f < 2.7)'`]; then
+      gem i rubygems-update -v '< 3' && update_rubygems;
+      gem install bundler -v '< 2';
+    fi
   - gem --version
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
