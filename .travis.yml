@@ -25,7 +25,7 @@ matrix:
     - gemfile: gemfiles/6.0.gemfile
       rvm: 2.2
 before_install:
-  - if [`ruby -e 'exit(RUBY_VERSION.to_f < 2.7)'`]; then
+  - if `ruby -e 'exit(RUBY_VERSION.to_f < 2.7)'`; then
       gem i rubygems-update -v '< 3' && update_rubygems;
       gem install bundler -v '< 2';
     fi
