@@ -133,8 +133,8 @@ module DeepPluck
     # No idea how to get the right association, so we try singularize or pluralize it.
     def backtrace_possible_association(relation, join_table)
       return join_table if relation.reflect_on_association(join_table)
-      join_table.to_s.singularize.tap{|s| return s.to_sym if relation.reflect_on_association(s) }
-      join_table.to_s.pluralize.tap{|s| return s.to_sym if relation.reflect_on_association(s) }
+      join_table.to_s.singularize.to_sym.tap{|s| return s if relation.reflect_on_association(s) }
+      join_table.to_s.pluralize.to_sym.tap{|s| return s if relation.reflect_on_association(s) }
       return nil
     end
 
