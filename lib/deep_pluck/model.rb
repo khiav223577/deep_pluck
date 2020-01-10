@@ -119,7 +119,23 @@ module DeepPluck
       query[reflect.type] = reflect.active_record.to_s if reflect.type
 
       return get_association_scope(reflect).where(query) if use_association_to_query?(reflect)
-      return relation.joins(get_join_table(reflect)).where(query)
+
+      join_table = get_join_table(reflect)
+      join_table = backtrace_possible_association(relation, join_table)
+
+      return relation.joins(join_table).where(query)
+    end
+
+    # Let city has_many :users, through: :schools
+    # And the query is: City.deep_pluck('users' => :name)
+    # We want to get the users data via `User.joins(:school).where(city_id: city_ids)`
+    # But get_join_table(reflect) returns `:schools` not :school
+    # No idea how to get the right association, so we try singularize or pluralize it.
+    def backtrace_possible_association(relation, join_table)
+      return join_table if relation.reflect_on_association(join_table)
+      join_table.to_s.singularize.tap{|s| return s.to_sym if relation.reflect_on_association(s) }
+      join_table.to_s.pluralize.tap{|s| return s.to_sym if relation.reflect_on_association(s) }
+      return nil
     end
 
     def set_includes_data(parent, column_name, model)

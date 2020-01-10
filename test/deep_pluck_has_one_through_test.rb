@@ -11,7 +11,7 @@ class DeepPluckHasOneThroughTest < Minitest::Test
     ], User.where(name: %w[John Pearl]).deep_pluck(:name, 'city' => :name)
   end
 
-  def test_has_many_through_has_many # city has_many school, school has_many users
+  def test_has_many_through_has_many # city has_many schools, school has_many users
     assert_equal [
       { 'name' => 'Taipei', 'users' => [{ 'name' => 'John' }] },
     ], City.where(name: 'Taipei').deep_pluck(:name, 'users' => :name)
