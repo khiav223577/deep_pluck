@@ -1,5 +1,9 @@
 ## Change Log
 
+### [v1.1.4](https://github.com/khiav223577/deep_pluck/compare/v1.1.3...v1.1.4) 2020/01/13
+- [#36](https://github.com/khiav223577/deep_pluck/pull/36) A workaround to fix mismatched association named. (@khiav223577)
+- [#35](https://github.com/khiav223577/deep_pluck/pull/35) Support Ruby 2.7 (@khiav223577)
+
 ### [v1.1.3](https://github.com/khiav223577/deep_pluck/compare/v1.1.2...v1.1.3) 2019/12/17
 - [#34](https://github.com/khiav223577/deep_pluck/pull/34) Support for plucking directly on a has_one through association (@khiav223577)
 
