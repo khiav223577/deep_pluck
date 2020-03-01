@@ -19,7 +19,7 @@ def assert_queries(expected_count, event_key = 'sql.active_record')
   end
   yield
   if expected_count != sqls.size # show all sql queries if query count doesn't equal to expected count.
-    assert_equal "expect #{expected_count} queries, but have #{sqls.size}", "\n#{sqls.join("\n").gsub('"', "'")}\n"
+    assert_equal "expect #{expected_count} queries, but have #{sqls.size}", "\n#{sqls.join("\n").tr('"', "'")}\n"
   end
   assert_equal expected_count, sqls.size
 ensure

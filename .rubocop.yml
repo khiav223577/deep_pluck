@@ -1,3 +1,7 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+
 AllCops:
   DisabledByDefault: true
   Exclude: []
@@ -90,7 +94,7 @@ Lint/FormatParameterMismatch:
   Description: 'The number of parameters to format/sprint must match the fields.'
   Enabled: true
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Description: "Don't suppress exception."
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#dont-hide-exceptions'
   Enabled: true
@@ -139,7 +143,7 @@ Lint/ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
 
-Lint/StringConversionInInterpolation:
+Lint/RedundantStringCoercion:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-to-s'
   Enabled: true
@@ -148,7 +152,7 @@ Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
 
-Lint/UnneededCopDisableDirective:
+Lint/RedundantCopDisableDirective:
   Description: >-
                  Checks for rubocop:disable comments that can be removed.
                  Note: this cop is not disabled when disabling all cops.
@@ -221,7 +225,7 @@ Metrics/CyclomaticComplexity:
                  of test cases needed to validate a method.
   Enabled: true
 
-Metrics/LineLength:
+Layout/LineLength:
   Description: 'Limit lines to 120 characters.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#80-character-limits'
   Max: 120
@@ -285,7 +289,7 @@ Performance/ReverseEach:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
   Enabled: true
 
-Performance/Sample:
+Style/Sample:
   Description: >-
                   Use `sample` instead of `shuffle.first`,
                   `shuffle.last`, and `shuffle[Fixnum]`.
@@ -353,7 +357,7 @@ Rails/TimeZone:
   Description: 'Checks the correct usage of time zone aware methods.'
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#time'
   Reference: 'http://danilenko.org/2012/7/6/rails_timezones'
-  Enabled: true
+  Enabled: false
 
 Rails/Validation:
   Description: 'Use validates :attribute, hash of validations.'
@@ -375,21 +379,21 @@ Style/Alias:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#alias-method'
   Enabled: true
 
-Layout/AlignArray:
+Layout/ArrayAlignment:
   Description: >-
                  Align the elements of an array literal if they span more than
                  one line.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#align-multiline-arrays'
   Enabled: true
 
-Layout/AlignHash:
+Layout/HashAlignment:
   Description: >-
                  Align the elements of a hash literal if they span more than
                  one line.
   EnforcedHashRocketStyle: table
   Enabled: true
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Description: >-
                  Align the parameters of a method call if they span more
                  than one line.
@@ -596,7 +600,7 @@ Style/EndBlock:
 Layout/EndOfLine:
   Description: 'Use Unix-style line endings.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#crlf'
-  Enabled: true
+  Enabled: false
 
 Style/EvenOdd:
   Description: 'Favor the use of Fixnum#even? && Fixnum#odd?'
@@ -617,14 +621,14 @@ Layout/InitialIndentation:
     Checks the indentation of the first non-blank non-comment line in a file.
   Enabled: true
 
-Layout/IndentFirstArgument:
+Layout/FirstArgumentIndentation:
   Description: 'Checks the indentation of the first parameter in a method call.'
   Enabled: true
 
-Style/FlipFlop:
+Lint/FlipFlop:
   Description: 'Checks for flip flops'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-flip-flops'
-  Enabled: true
+  Enabled: false
 
 Style/For:
   Description: 'Checks use of for or each in multiline loops.'
@@ -676,14 +680,14 @@ Layout/IndentationWidth:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
   Enabled: true
 
-Layout/IndentFirstArrayElement:
+Layout/FirstArrayElementIndentation:
   Description: >-
                  Checks the indentation of the first element in an array
                  literal.
   EnforcedStyle: consistent
   Enabled: true
 
-Layout/IndentFirstHashElement:
+Layout/FirstHashElementIndentation:
   Description: 'Checks the indentation of the first key in a hash literal.'
   EnforcedStyle: consistent
   Enabled: true
@@ -1123,7 +1127,7 @@ Layout/Tab:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
   Enabled: true
 
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Description: 'Checks trailing blank lines and final newline.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#newline-eof'
   Enabled: true
@@ -1178,11 +1182,11 @@ Style/UnlessElse:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-else-with-unless'
   Enabled: true
 
-Style/UnneededCapitalW:
+Style/RedundantCapitalW:
   Description: 'Checks for %W when interpolation is not needed.'
   Enabled: true
 
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
   Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-q'
   Enabled: true
