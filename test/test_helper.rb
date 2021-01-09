@@ -1,5 +1,5 @@
 require 'simplecov'
-SimpleCov.start 'test_frameworks'
+SimpleCov.start
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'deep_pluck'
