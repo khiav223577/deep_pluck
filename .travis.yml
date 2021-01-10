@@ -14,6 +14,7 @@ gemfile:
   - gemfiles/5.1.gemfile
   - gemfiles/5.2.gemfile
   - gemfiles/6.0.gemfile
+  - gemfiles/6.1.gemfile
 matrix:
   exclude:
     - gemfile: gemfiles/3.2.gemfile
@@ -23,6 +24,8 @@ matrix:
     - gemfile: gemfiles/4.2.gemfile
       rvm: 2.7
     - gemfile: gemfiles/6.0.gemfile
+      rvm: 2.2
+    - gemfile: gemfiles/6.1.gemfile
       rvm: 2.2
 before_install:
   - if `ruby -e 'exit(RUBY_VERSION.to_f < 2.7)'`; then
