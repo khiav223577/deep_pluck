@@ -1,5 +1,9 @@
 ## Change Log
 
+### [v1.1.5](https://github.com/khiav223577/deep_pluck/compare/v1.1.4...v1.1.5) 2021/01/10
+- [#39](https://github.com/khiav223577/deep_pluck/pull/39) Compatibility with Rails 6.1.1 (@klausbadelt)
+- [#40](https://github.com/khiav223577/deep_pluck/pull/40) Exclude tests from coverage (@klausbadelt)
+
 ### [v1.1.4](https://github.com/khiav223577/deep_pluck/compare/v1.1.3...v1.1.4) 2020/01/13
 - [#36](https://github.com/khiav223577/deep_pluck/pull/36) A workaround to fix mismatched association named. (@khiav223577)
 - [#35](https://github.com/khiav223577/deep_pluck/pull/35) Support Ruby 2.7 (@khiav223577)
