@@ -13,7 +13,7 @@ on:
 
 jobs:
   test:
-    name: Unit Tests
+    name: Test
     if: "contains(github.event.commits[0].message, '[ci skip]') == false"
     strategy:
       fail-fast: false
@@ -32,6 +32,17 @@ jobs:
           - gemfiles/5.2.gemfile
           - gemfiles/6.0.gemfile
           - gemfiles/6.1.gemfile
+        exclude:
+          - gemfile: gemfiles/3.2.gemfile
+            ruby: 2.6
+          - gemfile: gemfiles/3.2.gemfile
+            ruby: 2.7
+          - gemfile: gemfiles/4.2.gemfile
+            ruby: 2.7
+          - gemfile: gemfiles/6.0.gemfile
+            ruby: 2.2
+          - gemfile: gemfiles/6.1.gemfile
+            ruby: 2.2
         allow_failures:
           - false
     env:
