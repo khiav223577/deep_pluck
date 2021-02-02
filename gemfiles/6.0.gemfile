@@ -4,7 +4,7 @@ gem 'activerecord', '~> 6.0.0'
 gem 'pluck_all', '~> 2.0.4'
 
 group :test do
-  gem 'simplecov', '< 0.21'
+  gem 'simplecov', '< 0.18'
   gem 'sqlite3', '~> 1.4.1'
 end
 
