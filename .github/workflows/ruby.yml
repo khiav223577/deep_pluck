@@ -25,28 +25,28 @@ jobs:
           - 2.6
           - 2.7
         gemfile:
-          - gemfiles/3.2.gemfile
-          - gemfiles/4.2.gemfile
-          - gemfiles/5.0.gemfile
-          - gemfiles/5.1.gemfile
-          - gemfiles/5.2.gemfile
-          - gemfiles/6.0.gemfile
-          - gemfiles/6.1.gemfile
+          - 3.2.gemfile
+          - 4.2.gemfile
+          - 5.0.gemfile
+          - 5.1.gemfile
+          - 5.2.gemfile
+          - 6.0.gemfile
+          - 6.1.gemfile
         exclude:
-          - gemfile: gemfiles/3.2.gemfile
+          - gemfile: 3.2.gemfile
             ruby: 2.6
-          - gemfile: gemfiles/3.2.gemfile
+          - gemfile: 3.2.gemfile
             ruby: 2.7
-          - gemfile: gemfiles/4.2.gemfile
+          - gemfile: 4.2.gemfile
             ruby: 2.7
-          - gemfile: gemfiles/6.0.gemfile
+          - gemfile: 6.0.gemfile
             ruby: 2.2
-          - gemfile: gemfiles/6.1.gemfile
+          - gemfile: 6.1.gemfile
             ruby: 2.2
         allow_failures:
           - false
     env:
-      BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
+      BUNDLE_GEMFILE: "gemfiles/${{ matrix.gemfile }}"
       ALLOW_FAILURES: "${{ matrix.allow_failures }}"
     runs-on: ${{ matrix.os }}
 
