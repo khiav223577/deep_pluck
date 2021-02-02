@@ -13,13 +13,12 @@ on:
 
 jobs:
   test:
+    runs-on: ubuntu-latest
     name: Test
     if: "contains(github.event.commits[0].message, '[ci skip]') == false"
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
         ruby:
           - 2.2
           - 2.6
@@ -43,12 +42,8 @@ jobs:
             ruby: 2.2
           - gemfile: 6.1.gemfile
             ruby: 2.2
-        allow_failures:
-          - false
     env:
       BUNDLE_GEMFILE: "gemfiles/${{ matrix.gemfile }}"
-      ALLOW_FAILURES: "${{ matrix.allow_failures }}"
-    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout
@@ -59,7 +54,7 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
-      run: bundle exec rake || $ALLOW_FAILURES
+      run: bundle exec rake
     - name: Publish code coverage
       if: ${{ success() }}
       uses: paambaati/codeclimate-action@v2.7.5
