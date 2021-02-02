@@ -120,10 +120,21 @@ module DeepPluck
 
       return get_association_scope(reflect).where(query) if use_association_to_query?(reflect)
 
-      join_table = get_join_table(reflect)
-      join_table = backtrace_possible_association(relation, join_table)
+      joins = if reflect.macro == :has_and_belongs_to_many
+                get_middle_joins(reflect)
+              else
+                backtrace_possible_association(relation, get_join_table(reflect))
+              end
 
-      return relation.joins(join_table).where(query)
+      return relation.joins(joins).where(query)
+    end
+
+    def get_middle_joins(reflect)
+      association_joins = [reflect.active_record.table_name]
+      join_dependency = ActiveRecord::Associations::JoinDependency.new(reflect.klass, association_joins, [])
+      info = join_dependency.join_constraints([])[0]
+      return nil if info == nil
+      return info.joins[0]
     end
 
     # Let city has_many :users, through: :schools
