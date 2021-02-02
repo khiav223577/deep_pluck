@@ -1,7 +1,7 @@
 # DeepPluck
 
 [![Gem Version](https://img.shields.io/gem/v/deep_pluck.svg?style=flat)](http://rubygems.org/gems/deep_pluck)
-[![Build Status](https://github.com/khiav223577/deep_pluck/workflows/build/badge.svg)](https://github.com/khiav223577/deep_pluck/actions)
+[![Build Status](https://github.com/khiav223577/deep_pluck/workflows/Ruby/badge.svg)](https://github.com/khiav223577/deep_pluck/actions)
 [![RubyGems](http://img.shields.io/gem/dt/deep_pluck.svg?style=flat)](http://rubygems.org/gems/deep_pluck)
 [![Code Climate](https://codeclimate.com/github/khiav223577/deep_pluck/badges/gpa.svg)](https://codeclimate.com/github/khiav223577/deep_pluck)
 [![Test Coverage](https://codeclimate.com/github/khiav223577/deep_pluck/badges/coverage.svg)](https://codeclimate.com/github/khiav223577/deep_pluck/coverage)
