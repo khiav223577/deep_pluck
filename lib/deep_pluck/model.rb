@@ -129,12 +129,12 @@ module DeepPluck
       return relation.joins(joins).where(query)
     end
 
-    RAILS_5_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.0.0')
+    RAILS_5_2_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.2.0')
 
     def build_middle_join(reflect, relation)
       join_dependency = build_join_dependency(reflect, relation)
 
-      if RAILS_5_FLAG
+      if RAILS_5_2_FLAG
         joins = join_dependency.join_constraints([], Arel::Nodes::InnerJoin, relation.alias_tracker)
         return joins[0]
       else
@@ -143,7 +143,7 @@ module DeepPluck
       end
     end
 
-    if RAILS_5_FLAG
+    if RAILS_5_2_FLAG
       def build_join_dependency(reflect, relation)
         association_joins = [reflect.active_record.table_name]
 
