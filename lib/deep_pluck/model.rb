@@ -1,5 +1,6 @@
 require 'rails_compatibility'
 require 'rails_compatibility/unscope_where'
+require 'rails_compatibility/build_joins'
 require 'deep_pluck/data_combiner'
 
 module DeepPluck
@@ -120,10 +121,13 @@ module DeepPluck
 
       return get_association_scope(reflect).where(query) if use_association_to_query?(reflect)
 
-      join_table = get_join_table(reflect)
-      join_table = backtrace_possible_association(relation, join_table)
+      joins = if reflect.macro == :has_and_belongs_to_many
+                RailsCompatibility.build_joins(reflect, relation)[0]
+              else
+                backtrace_possible_association(relation, get_join_table(reflect))
+              end
 
-      return relation.joins(join_table).where(query)
+      return relation.joins(joins).where(query)
     end
 
     # Let city has_many :users, through: :schools

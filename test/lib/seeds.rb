@@ -55,6 +55,20 @@ ActiveRecord::Schema.define do
   create_table :cities, force: true do |t|
     t.string :name
   end
+
+  create_table :counties, force: true do |t|
+    t.string :name, null: false
+  end
+
+  create_table :counties_zipcodes, force: true do |t|
+    t.references :county, index: true, null: false
+    t.references :zipcode, index: true, null: false
+  end
+
+  create_table :zipcodes, force: true do |t|
+    t.string :zip, null: false
+    t.string :city, null: false
+  end
 end
 
 $optional_true = ActiveRecord::VERSION::MAJOR < 5 ? {} : { optional: true }
@@ -117,4 +131,21 @@ Note.create([
   { parent: users[0], content: 'user note' },
   { parent: contacts[0], content: 'contact note' },
   { parent: posts[0], content: 'post note' },
+])
+
+County.create([
+  {
+    name: 'Fulton',
+    zipcodes: [
+      Zipcode.new(city: 'Atlanta', zip: '30301'),
+      Zipcode.new(city: 'Union City', zip: '30291'),
+    ],
+  },
+  {
+    name: 'Hennepin',
+    zipcodes: [
+      Zipcode.new(city: 'Minneapolis', zip: '55410'),
+      Zipcode.new(city: 'Edina', zip: '55416'),
+    ],
+  },
 ])
