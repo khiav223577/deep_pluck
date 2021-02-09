@@ -1,5 +1,9 @@
 ## Change Log
 
+### [v1.1.6](https://github.com/khiav223577/deep_pluck/compare/v1.1.5...v1.1.6) 2021/02/09
+- [#43](https://github.com/khiav223577/deep_pluck/pull/43) Support has_and_belongs_to_many (@khiav223577)
+- [#42](https://github.com/khiav223577/deep_pluck/pull/42) Migrating from Travis CI to GitHub Actions (@khiav223577)
+
 ### [v1.1.5](https://github.com/khiav223577/deep_pluck/compare/v1.1.4...v1.1.5) 2021/01/10
 - [#39](https://github.com/khiav223577/deep_pluck/pull/39) Compatibility with Rails 6.1.1 (@klausbadelt)
 - [#40](https://github.com/khiav223577/deep_pluck/pull/40) Exclude tests from coverage (@klausbadelt)
