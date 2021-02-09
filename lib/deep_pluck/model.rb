@@ -129,20 +129,25 @@ module DeepPluck
       return relation.joins(joins).where(query)
     end
 
-    RAILS_6_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('6.0.0')
+    RAILS_6_1_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('6.1.0')
+    RAILS_6_0_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('6.0.0')
     RAILS_5_2_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.2.0')
     RAILS_5_1_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.1.0')
+    RAILS_5_0_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.0.0')
 
     def build_middle_join(reflect, relation)
       join_dependency = build_join_dependency(reflect, relation)
 
-      if RAILS_6_FLAG
+      if RAILS_6_1_FLAG
         joins = join_dependency.join_constraints([], relation.alias_tracker, relation.references_values)
+        return joins[0]
+      elsif RAILS_6_0_FLAG
+        joins = join_dependency.join_constraints([], relation.alias_tracker)
         return joins[0]
       elsif RAILS_5_2_FLAG
         joins = join_dependency.join_constraints([], Arel::Nodes::InnerJoin, relation.alias_tracker)
         return joins[0]
-      elsif RAILS_5_1_FLAG
+      elsif RAILS_5_0_FLAG
         info = join_dependency.join_constraints([], Arel::Nodes::InnerJoin)[0]
         return info.joins[0]
       else
@@ -151,7 +156,7 @@ module DeepPluck
       end
     end
 
-    if RAILS_6_FLAG
+    if RAILS_6_0_FLAG
       def build_join_dependency(reflect, relation)
         association_joins = [reflect.active_record.table_name]
         return relation.construct_join_dependency(association_joins, Arel::Nodes::InnerJoin)
