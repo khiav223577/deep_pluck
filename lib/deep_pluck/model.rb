@@ -121,7 +121,7 @@ module DeepPluck
       return get_association_scope(reflect).where(query) if use_association_to_query?(reflect)
 
       joins = if reflect.macro == :has_and_belongs_to_many
-                build_middle_joins(reflect, relation)
+                build_middle_join(reflect, relation)
               else
                 backtrace_possible_association(relation, get_join_table(reflect))
               end
@@ -131,16 +131,15 @@ module DeepPluck
 
     RAILS_5_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.0.0')
 
-    def build_middle_joins(reflect, relation)
+    def build_middle_join(reflect, relation)
       join_dependency = build_join_dependency(reflect, relation)
-      root = join_dependency.send(:join_root)
-
-      child = root.children[0]
 
       if RAILS_5_FLAG
-        return child.join_constraints(root.table, root.base_klass, Arel::Nodes::InnerJoin, relation.alias_tracker)[0]
+        joins = join_dependency.join_constraints([], Arel::Nodes::InnerJoin, relation.alias_tracker)
+        return joins[0]
       else
-        return child.join_constraints(root.table, root.base_klass, child, Arel::Nodes::InnerJoin, child.tables, child.reflection.scope_chain, child.reflection.chain).joins[0]
+        info = join_dependency.join_constraints([])[0]
+        return info.joins[0]
       end
     end
 
