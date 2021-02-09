@@ -133,4 +133,19 @@ Note.create([
   { parent: posts[0], content: 'post note' },
 ])
 
-County.create(name: 'Fulton', zipcodes: [Zipcode.new(city: 'Atlanta', zip: '30301')])
+County.create([
+  {
+    name: 'Fulton',
+    zipcodes: [
+      Zipcode.new(city: 'Atlanta', zip: '30301'),
+      Zipcode.new(city: 'Union City', zip: '30291'),
+    ],
+  },
+  {
+    name: 'Hennepin',
+    zipcodes: [
+      Zipcode.new(city: 'Minneapolis', zip: '55410'),
+      Zipcode.new(city: 'Edina', zip: '55416'),
+    ],
+  },
+])
