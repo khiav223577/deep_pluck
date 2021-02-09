@@ -1,5 +1,6 @@
 require 'rails_compatibility'
 require 'rails_compatibility/unscope_where'
+require 'rails_compatibility/build_joins'
 require 'deep_pluck/data_combiner'
 
 module DeepPluck
@@ -121,68 +122,13 @@ module DeepPluck
       return get_association_scope(reflect).where(query) if use_association_to_query?(reflect)
 
       joins = if reflect.macro == :has_and_belongs_to_many
-                build_middle_join(reflect, relation)
+                RailsCompatibility.build_joins(reflect, relation)[0]
               else
                 backtrace_possible_association(relation, get_join_table(reflect))
               end
 
       return relation.joins(joins).where(query)
     end
-
-    RAILS_6_1_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('6.1.0')
-    RAILS_6_0_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('6.0.0')
-    RAILS_5_2_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.2.0')
-    RAILS_5_1_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.1.0')
-    RAILS_5_0_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('5.0.0')
-    RAILS_4_0_FLAG = Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new('4.0.0')
-
-    def build_middle_join(reflect, relation)
-      join_dependency = build_join_dependency(reflect, relation)
-
-      if RAILS_6_1_FLAG
-        joins = join_dependency.join_constraints([], relation.alias_tracker, relation.references_values)
-        return joins[0]
-      elsif RAILS_6_0_FLAG
-        joins = join_dependency.join_constraints([], relation.alias_tracker)
-        return joins[0]
-      elsif RAILS_5_2_FLAG
-        joins = join_dependency.join_constraints([], Arel::Nodes::InnerJoin, relation.alias_tracker)
-        return joins[0]
-      elsif RAILS_5_0_FLAG
-        info = join_dependency.join_constraints([], Arel::Nodes::InnerJoin)[0]
-        return info.joins[0]
-      elsif RAILS_4_0_FLAG
-        info = join_dependency.join_constraints([])[0]
-        return info.joins[0]
-      else
-        return join_dependency.join_associations[0]
-      end
-    end
-
-    if RAILS_6_0_FLAG
-      def build_join_dependency(reflect, relation)
-        association_joins = [reflect.active_record.table_name]
-        return relation.construct_join_dependency(association_joins, Arel::Nodes::InnerJoin)
-      end
-    elsif RAILS_5_2_FLAG
-      def build_join_dependency(reflect, relation)
-        association_joins = [reflect.active_record.table_name]
-
-        join_dependency = ActiveRecord::Associations::JoinDependency.new(reflect.klass, relation.table, association_joins)
-
-        root = join_dependency.send(:join_root)
-
-        join_dependency.instance_variable_set(:@alias_tracker, relation.alias_tracker)
-        join_dependency.send(:construct_tables!, root)
-        return join_dependency
-      end
-    else
-      def build_join_dependency(reflect, _relation)
-        association_joins = [reflect.active_record.table_name]
-        return ActiveRecord::Associations::JoinDependency.new(reflect.klass, association_joins, [])
-      end
-    end
-
 
     # Let city has_many :users, through: :schools
     # And the query is: City.deep_pluck('users' => :name)
