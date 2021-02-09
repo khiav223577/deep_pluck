@@ -132,7 +132,10 @@ module DeepPluck
     def get_middle_joins(reflect)
       association_joins = [reflect.active_record.table_name]
       join_dependency = ActiveRecord::Associations::JoinDependency.new(reflect.klass, association_joins, [])
-      info = join_dependency.join_constraints([])[0]
+
+      root = join_dependency.send(:join_root)
+      child = root.children[0]
+      info  = join_dependency.send(:make_constraints, root, child, child.tables, Arel::Nodes::InnerJoin)
       return nil if info == nil
       return info.joins[0]
     end
