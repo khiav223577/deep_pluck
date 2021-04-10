@@ -1,5 +1,9 @@
 ## Change Log
 
+### [v1.1.7](https://github.com/khiav223577/deep_pluck/compare/v1.1.6...v1.1.7) 2021/04/10
+- [#48](https://github.com/khiav223577/deep_pluck/pull/48) Fix: joins incorrect table when doing inverse lookup for HABTM associations with custom name (@khiav223577)
+- [#45](https://github.com/khiav223577/deep_pluck/pull/45) Do not publish code coverage for PRs from forks (@moon-moon-husky)
+
 ### [v1.1.6](https://github.com/khiav223577/deep_pluck/compare/v1.1.5...v1.1.6) 2021/02/09
 - [#43](https://github.com/khiav223577/deep_pluck/pull/43) Fix has_and_belongs_to_many issues when it does not specify "through" table (@khiav223577)
 - [#42](https://github.com/khiav223577/deep_pluck/pull/42) Migrating from Travis CI to GitHub Actions (@khiav223577)
