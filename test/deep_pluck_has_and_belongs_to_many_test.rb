@@ -18,7 +18,9 @@ class DeepPluckHasAndBelongsToManyTest < Minitest::Test
         'name' => 'program A',
       ],
     ]
+  end
 
+  def test_custom_inverse_association_name
     assert_equal TrainingProgram.deep_pluck(:name, training_providers: :name), [
       'name' => 'program A',
       training_providers: [
