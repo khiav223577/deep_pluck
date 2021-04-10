@@ -178,9 +178,11 @@ County.create([
   },
 ])
 
-TrainingProgram.create!(
-  name: 'program A',
-  training_providers: [
-    TrainingProvider.create!(name: 'provider X'),
-  ],
-)
+if ActiveRecord::VERSION::MAJOR > 3 # Rails 3 doesn't support inverse_of options in HABTM
+  TrainingProgram.create!(
+    name: 'program A',
+    training_providers: [
+      TrainingProvider.create!(name: 'provider X'),
+    ],
+  )
+end
