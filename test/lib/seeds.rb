@@ -76,6 +76,19 @@ ActiveRecord::Schema.define do
     t.string :zip, null: false
     t.string :city, null: false
   end
+
+  create_table :training_programs, force: :cascade do |t|
+    t.string :name
+  end
+
+  create_table :training_providers, force: :cascade do |t|
+    t.string :name
+  end
+
+  create_table :training_programs_training_providers, id: false, force: :cascade do |t|
+    t.references :training_provider, null: false, index: false
+    t.references :training_program, null: false, index: false
+  end
 end
 
 $optional_true = ActiveRecord::VERSION::MAJOR < 5 ? {} : { optional: true }
@@ -164,3 +177,12 @@ County.create([
     ],
   },
 ])
+
+if ActiveRecord::VERSION::MAJOR > 3 # Rails 3 doesn't support inverse_of options in HABTM
+  TrainingProgram.create!(
+    name: 'program A',
+    training_providers: [
+      TrainingProvider.create!(name: 'provider X'),
+    ],
+  )
+end

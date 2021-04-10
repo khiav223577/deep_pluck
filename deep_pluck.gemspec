@@ -41,5 +41,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'activerecord', '>= 3'
   spec.add_dependency 'pluck_all', '>= 1.2.3'
-  spec.add_dependency 'rails_compatibility', '>= 0.0.3'
+  spec.add_dependency 'rails_compatibility', '>= 0.0.4'
 end
