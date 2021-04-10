@@ -14,33 +14,40 @@ ActiveRecord::Schema.define do
     t.string :name
     t.string :title
   end
+
   create_table :post_comments, force: true do |t|
     t.integer :post_id
     t.string :comment
   end
+
   create_table :contacts, force: true do |t|
     t.integer :user_id
     t.string :address
     t.string :phone_number
   end
+
   create_table :contact2s, id: false, force: true do |t|
     t.primary_key :id2
     t.integer :user_id2
     t.string :address
     t.string :phone_number
   end
+
   create_table :contact2_infos, id: false, force: true do |t|
     t.primary_key :id2
     t.string :info
     t.integer :contact_id2
   end
+
   create_table :user_achievements, force: true do |t|
     t.references :user, index: true
     t.references :achievement, index: true
   end
+
   create_table :achievements, force: true do |t|
     t.string :name
   end
+
   create_table :notes, force: true do |t|
     t.integer :parent_id
     t.string :parent_type
@@ -88,6 +95,7 @@ users = User.create([
   { name: 'Doggy', email: 'kathenrie@example.com', gender: 'female' },
   { name: 'Catty', email: 'catherine@example.com', gender: 'female' },
 ])
+
 posts = Post.create([
   { name: 'post1', title: "John's post1", user_id: users[0].id },
   { name: 'post2', title: "John's post2", user_id: users[0].id },
@@ -96,37 +104,44 @@ posts = Post.create([
   { name: 'post5', title: "Pearl's post2", user_id: users[1].id },
   { name: 'post6', title: "Doggy's post1", user_id: users[2].id },
 ])
+
 PostComment.create([
   { post_id: posts[2].id, comment: 'WTF?' },
   { post_id: posts[2].id, comment: '...' },
   { post_id: posts[3].id, comment: 'cool!' },
   { post_id: posts[5].id, comment: 'hahahahahahha' },
 ])
+
 contacts = Contact.create([
   { address: "John's Home", phone_number: '0911666888', user_id: users[0].id },
   { address: "Pearl's Home", phone_number: '1011-0404-934', user_id: users[1].id },
   { address: "Doggy's Home", phone_number: '02-254421', user_id: users[2].id },
 ])
+
 contact2 = Contact2.create([
   { address: "John's Home2", phone_number: '0911666888', user_id2: users[0].id },
   { address: "Pearl's Home2", phone_number: '1011-0404-934', user_id2: users[1].id },
   { address: "Doggy's Home2", phone_number: '02-254421', user_id2: users[2].id },
 ])
+
 Contact2Info.create([
   { info: 'info1', contact_id2: contact2[0].id },
   { info: 'info2', contact_id2: contact2[1].id },
   { info: 'info3', contact_id2: contact2[2].id },
 ])
+
 achievements = Achievement.create([
   { name: 'achievement1' },
   { name: 'achievement2' },
   { name: 'achievement3' },
 ])
+
 UserAchievement.create([
   { user_id: users[0].id, achievement_id: achievements[0].id },
   { user_id: users[1].id, achievement_id: achievements[0].id },
   { user_id: users[1].id, achievement_id: achievements[2].id },
 ])
+
 Note.create([
   { parent: users[0], content: 'user note' },
   { parent: contacts[0], content: 'contact note' },
