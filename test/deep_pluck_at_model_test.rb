@@ -1,6 +1,10 @@
 require 'test_helper'
 
 class DeepPluckAtModelTest < Minitest::Test
+  def setup
+    Post.where(id: [-1]).ids if ActiveRecord::VERSION::MAJOR == 4 # trigger PRAGMA table_info('posts')
+  end
+
   def test_1_level_deep
     user = User.where(name: 'Pearl').first
     expected = { 'name' => 'Pearl' }
