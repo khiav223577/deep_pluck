@@ -186,3 +186,26 @@ if ActiveRecord::VERSION::MAJOR > 3 # Rails 3 doesn't support inverse_of options
     ],
   )
 end
+
+if ActiveRecord::VERSION::MAJOR > 3
+  require 'globalize'
+
+  ActiveRecord::Schema.define do
+    create_table :questionnaires, force: true do |t|
+      t.references :user
+    end
+
+    Questionnaire.create_translation_table! title: :string
+  end
+
+  I18n.available_locales = [:en, :'zh-TW']
+
+  users[0].questionnaires.create!.tap do |questionnaire|
+    I18n.with_locale(:en){ questionnaire.update(title: 'What is your favorite food?') }
+    I18n.with_locale(:'zh-TW'){ questionnaire.update(title: '你最愛的食物為何？') }
+  end
+
+  users[0].questionnaires.create!.tap do |questionnaire|
+    I18n.with_locale(:en){ questionnaire.update(title: 'Why did you purchase this product?') }
+  end
+end

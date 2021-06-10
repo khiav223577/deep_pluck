@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'activerecord', '~> 6.0.0'
-gem 'pluck_all', '~> 2.0.4'
+gem 'pluck_all', '~> 2.3.2'
+
+gem 'globalize'
 
 group :test do
   gem 'simplecov', '< 0.18'

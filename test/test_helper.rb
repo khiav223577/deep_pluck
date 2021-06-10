@@ -15,7 +15,10 @@ require 'lib/seeds'
 def assert_queries(expected_count, event_key = 'sql.active_record')
   sqls = []
   subscriber = ActiveSupport::Notifications.subscribe(event_key) do |_, _, _, _, payload|
-    sqls << "  ● #{payload[:sql]}" if payload[:sql] !~ /\A(?:BEGIN TRANSACTION|COMMIT TRANSACTION|BEGIN|COMMIT)\z/i
+    next if payload[:sql].start_with?('PRAGMA table_info')
+    next if payload[:sql] =~ /\A(?:BEGIN TRANSACTION|COMMIT TRANSACTION|BEGIN|COMMIT)\z/i
+
+    sqls << "  ● #{payload[:sql]}"
   end
   yield
   if expected_count != sqls.size # show all sql queries if query count doesn't equal to expected count.
