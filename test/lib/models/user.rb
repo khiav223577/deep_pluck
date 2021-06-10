@@ -16,4 +16,6 @@ class User < ActiveRecord::Base
 
   belongs_to :school, $optional_true
   has_one :city, through: :school
+
+  has_many :questionnaires
 end
