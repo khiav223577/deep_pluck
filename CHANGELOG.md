@@ -1,5 +1,8 @@
 ## Change Log
 
+### [v1.2.0](https://github.com/khiav223577/deep_pluck/compare/v1.1.7...v1.2.0) 2021/06/10
+- [#50](https://github.com/khiav223577/deep_pluck/pull/50) Support `globalize` gem (@khiav223577)
+
 ### [v1.1.7](https://github.com/khiav223577/deep_pluck/compare/v1.1.6...v1.1.7) 2021/04/10
 - [#48](https://github.com/khiav223577/deep_pluck/pull/48) Fix: joins incorrect table when doing inverse lookup for HABTM associations with custom name (@khiav223577)
 - [#45](https://github.com/khiav223577/deep_pluck/pull/45) Do not publish code coverage for PRs from forks (@moon-moon-husky)
