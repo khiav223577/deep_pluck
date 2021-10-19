@@ -9,7 +9,7 @@
 Allow you to pluck deeply into nested associations without loading a bunch of records.
 
 ## Supports
-- Ruby 2.2 ~ 2.7
+- Ruby 2.2 ~ 2.7, 3.0
 - Rails 3.2, 4.2, 5.0, 5.1, 5.2, 6.0
 
 ## Installation
