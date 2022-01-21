@@ -24,6 +24,7 @@ jobs:
           - 2.6
           - 2.7
           - 3.0
+          - 3.1
         gemfile:
           - 3.2.gemfile
           - 4.2.gemfile
@@ -39,35 +40,47 @@ jobs:
             ruby: 2.7
           - gemfile: 3.2.gemfile
             ruby: 3.0
+          - gemfile: 3.2.gemfile
+            ruby: 3.1
           - gemfile: 4.2.gemfile
             ruby: 2.7
           - gemfile: 4.2.gemfile
             ruby: 3.0
+          - gemfile: 4.2.gemfile
+            ruby: 3.1
           - gemfile: 5.0.gemfile
             ruby: 3.0
+          - gemfile: 5.0.gemfile
+            ruby: 3.1
           - gemfile: 5.1.gemfile
             ruby: 3.0
+          - gemfile: 5.1.gemfile
+            ruby: 3.1
           - gemfile: 5.2.gemfile
             ruby: 3.0
+          - gemfile: 5.2.gemfile
+            ruby: 3.1
           - gemfile: 6.0.gemfile
             ruby: 2.2
           - gemfile: 6.1.gemfile
+            ruby: 2.2
+          - gemfile: 7.0.gemfile
             ruby: 2.2
     env:
       BUNDLE_GEMFILE: "gemfiles/${{ matrix.gemfile }}"
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-    - name: Run tests
-      run: bundle exec rake
-    - name: Publish code coverage
-      if: ${{ success() && github.event.pull_request.head.repo.full_name == github.repository }}
-      uses: paambaati/codeclimate-action@v2.7.5
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Run tests
+        run: bundle exec rake
+      - name: Publish code coverage
+        if: ${{ success() }}
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
