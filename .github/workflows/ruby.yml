@@ -33,6 +33,7 @@ jobs:
           - 5.2.gemfile
           - 6.0.gemfile
           - 6.1.gemfile
+          - 7.0.gemfile
         exclude:
           - gemfile: 3.2.gemfile
             ruby: 2.6
@@ -66,6 +67,8 @@ jobs:
             ruby: 2.2
           - gemfile: 7.0.gemfile
             ruby: 2.2
+          - gemfile: 7.0.gemfile
+            ruby: 2.6
     env:
       BUNDLE_GEMFILE: "gemfiles/${{ matrix.gemfile }}"
 

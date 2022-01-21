@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'activerecord', '~> 7.0.0'
 gem 'pluck_all', '~> 2.3.2'
 
-gem 'globalize'
+gem 'globalize',  '~> 6.0.1'
 
 group :test do
   gem 'simplecov', '< 0.18'
