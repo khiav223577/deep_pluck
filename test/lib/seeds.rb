@@ -94,6 +94,13 @@ end
 $optional_true = ActiveRecord::VERSION::MAJOR < 5 ? {} : { optional: true }
 ActiveSupport::Dependencies.autoload_paths << File.expand_path('../models/', __FILE__)
 
+if ActiveRecord::VERSION::MAJOR >= 7
+  require 'zeitwerk'
+  loader = Zeitwerk::Loader.for_gem
+  ActiveSupport::Dependencies.autoload_paths.each{|path| loader.push_dir(path) }
+  loader.setup
+end
+
 cities = City.create([
   { name: 'Taipei' },
 ])
@@ -187,7 +194,10 @@ if ActiveRecord::VERSION::MAJOR > 3 # Rails 3 doesn't support inverse_of options
   )
 end
 
-if ActiveRecord::VERSION::MAJOR > 3
+# TODO: wait for globalize to support Rails 7.
+SUPPORT_GLOBALIZE = (ActiveRecord::VERSION::MAJOR > 3 && ActiveRecord::VERSION::MAJOR < 7)
+
+if SUPPORT_GLOBALIZE
   require 'globalize'
 
   ActiveRecord::Schema.define do
