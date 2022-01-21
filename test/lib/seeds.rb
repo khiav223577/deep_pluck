@@ -187,7 +187,10 @@ if ActiveRecord::VERSION::MAJOR > 3 # Rails 3 doesn't support inverse_of options
   )
 end
 
-if ActiveRecord::VERSION::MAJOR > 3
+# TODO: wait for globalize to support Rails 7.
+SUPPORT_GLOBALIZE = (ActiveRecord::VERSION::MAJOR > 3 && ActiveRecord::VERSION::MAJOR < 7)
+
+if SUPPORT_GLOBALIZE
   require 'globalize'
 
   ActiveRecord::Schema.define do
