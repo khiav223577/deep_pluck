@@ -5,6 +5,7 @@ ActiveRecord::Schema.define do
     t.string :name
     t.string :email
     t.string :gender
+    t.string :species_taxid
     t.integer :school_id
     t.text :serialized_attribute
   end
@@ -89,6 +90,12 @@ ActiveRecord::Schema.define do
     t.references :training_provider, null: false, index: false
     t.references :training_program, null: false, index: false
   end
+
+  create_table :species, force: true do |t|
+    t.string :name, null: false
+    t.string :taxid, null: false
+    t.boolean :primary
+  end
 end
 
 $optional_true = ActiveRecord::VERSION::MAJOR < 5 ? {} : { optional: true }
@@ -107,9 +114,9 @@ schools = School.create([
 ])
 
 users = User.create([
-  { name: 'John', email: 'john@example.com', gender: 'male', school: schools[0] },
+  { name: 'John', email: 'john@example.com', gender: 'male', school: schools[0], species_taxid: '1' },
   { name: 'Pearl', email: 'pearl@example.com', gender: 'female', serialized_attribute: { testing: true, deep: { deep: :deep }}},
-  { name: 'Doggy', email: 'kathenrie@example.com', gender: 'female' },
+  { name: 'Doggy', email: 'kathenrie@example.com', gender: 'female', species_taxid: '2' },
   { name: 'Catty', email: 'catherine@example.com', gender: 'female' },
 ])
 
@@ -180,6 +187,14 @@ County.create([
       Zipcode.new(city: 'Edina', zip: '55416'),
     ],
   },
+])
+
+Species.create!([
+  { taxid: '1', name: 'Bat', primary: true },
+  { taxid: '1', name: 'bat' },
+  { taxid: '1', name: 'batmen' },
+  { taxid: '2', name: 'Rat', primary: true },
+  { taxid: '2', name: 'rat' },
 ])
 
 if ActiveRecord::VERSION::MAJOR > 3 # Rails 3 doesn't support inverse_of options in HABTM
