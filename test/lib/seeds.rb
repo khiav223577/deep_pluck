@@ -95,6 +95,9 @@ $optional_true = ActiveRecord::VERSION::MAJOR < 5 ? {} : { optional: true }
 require 'rails_compatibility/setup_autoload_paths'
 RailsCompatibility.setup_autoload_paths [File.expand_path('../models/', __FILE__)]
 
+ActiveRecord::Base.use_yaml_unsafe_load = true if ActiveRecord::Base.method_defined?(:use_yaml_unsafe_load) # For Rails 5.2
+ActiveRecord.use_yaml_unsafe_load = true if ActiveRecord.respond_to?(:use_yaml_unsafe_load) # For Rails 7.0
+
 cities = City.create([
   { name: 'Taipei' },
 ])
