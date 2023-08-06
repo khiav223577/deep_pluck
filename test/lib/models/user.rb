@@ -18,4 +18,7 @@ class User < ActiveRecord::Base
   has_one :city, through: :school
 
   has_many :questionnaires
+
+  has_many :species, foreign_key: :taxid, primary_key: :species_taxid
+  has_one :primary_species, ->{ where(primary: true) }, foreign_key: :taxid, primary_key: :species_taxid, class_name: 'Species'
 end
