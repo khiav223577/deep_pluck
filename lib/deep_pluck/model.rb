@@ -50,6 +50,8 @@ module DeepPluck
     end
 
     def get_primary_key(reflect)
+      options = reflect.options
+      return options[:primary_key] if options[:primary_key]
       return (reflect.belongs_to? ? reflect.klass : reflect.active_record).primary_key
     end
 
