@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_compatibility'
 require 'rails_compatibility/unscope_where'
 require 'rails_compatibility/build_joins'

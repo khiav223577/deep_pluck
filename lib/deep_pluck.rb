@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'deep_pluck/version'
 require 'deep_pluck/model'
 require 'active_record'
