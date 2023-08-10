@@ -146,6 +146,7 @@ contact2 = Contact2.create([
   { address: "John's Home2", phone_number: '0911666888', user_id2: users[0].id },
   { address: "Pearl's Home2", phone_number: '1011-0404-934', user_id2: users[1].id },
   { address: "Doggy's Home2", phone_number: '02-254421', user_id2: users[2].id },
+  { address: "no one's Home2", phone_number: '??', user_id2: nil },
 ])
 
 Contact2Info.create([
@@ -187,6 +188,9 @@ County.create([
       Zipcode.new(city: 'Edina', zip: '55416'),
     ],
   },
+  {
+    name: 'unknown',
+  }
 ])
 
 Species.create!([

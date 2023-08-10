@@ -34,7 +34,7 @@ class DeepPluckTest < Minitest::Test
     assert_equal [
       { 'name' => 'John', :contact => { 'address' => "John's Home" }},
       { 'name' => 'Pearl', :contact => { 'address' => "Pearl's Home" }},
-      { 'name' => 'Catty' },
+      { 'name' => 'Catty', :contact => nil },
     ], User.where(name: %w[John Pearl Catty]).deep_pluck(:name, contact: :address)
   end
 
@@ -161,21 +161,24 @@ class DeepPluckTest < Minitest::Test
     expected = [
       { 'name' => 'Pearl', :contact2 => { 'address' => "Pearl's Home2" }},
       { 'name' => 'Doggy', :contact2 => { 'address' => "Doggy's Home2" }},
+      { 'name' => 'Catty', :contact2 => nil },
     ]
-    assert_equal expected, User.where(name: %w[Pearl Doggy]).deep_pluck(:name, contact2: :address)
+    assert_equal expected, User.where(name: %w[Pearl Doggy Catty]).deep_pluck(:name, contact2: :address)
     expected = [
-      { :user => { 'name' => 'John'     }, 'address' => "John's Home2" },
-      { :user => { 'name' => 'Pearl'    }, 'address' => "Pearl's Home2" },
-      { :user => { 'name' => 'Doggy' }, 'address' => "Doggy's Home2" },
+      { 'address' => "John's Home2", :user => { 'name' => 'John' } },
+      { 'address' => "Pearl's Home2", :user => { 'name' => 'Pearl' } },
+      { 'address' => "Doggy's Home2", :user => { 'name' => 'Doggy' },  },
+      { 'address' => "no one's Home2", :user => nil },
     ]
     assert_equal expected, Contact2.deep_pluck(:address, user: :name)
   end
 
   def test_custom_primary_key
     expected = [
-      { :contact2_info => { 'info' => 'info1' }, 'address' => "John's Home2" },
-      { :contact2_info => { 'info' => 'info2' }, 'address' => "Pearl's Home2" },
-      { :contact2_info => { 'info' => 'info3' }, 'address' => "Doggy's Home2" },
+      { 'address' => "John's Home2", :contact2_info => { 'info' => 'info1' } },
+      { 'address' => "Pearl's Home2", :contact2_info => { 'info' => 'info2' } },
+      { 'address' => "Doggy's Home2", :contact2_info => { 'info' => 'info3' } },
+      { 'address' => "no one's Home2", :contact2_info => nil },
     ]
     assert_equal expected, Contact2.deep_pluck(:address, contact2_info: :info)
     expected = [
