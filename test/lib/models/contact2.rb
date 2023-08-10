@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Contact2 < ActiveRecord::Base
   self.primary_key = :id2
   belongs_to :user, foreign_key: :user_id2

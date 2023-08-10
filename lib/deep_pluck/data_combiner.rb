@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeepPluck
   module DataCombiner
     class << self
