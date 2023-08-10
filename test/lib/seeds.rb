@@ -187,6 +187,9 @@ County.create([
       Zipcode.new(city: 'Edina', zip: '55416'),
     ],
   },
+  {
+    name: 'unknown',
+  }
 ])
 
 Species.create!([

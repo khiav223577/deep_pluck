@@ -34,7 +34,7 @@ class DeepPluckTest < Minitest::Test
     assert_equal [
       { 'name' => 'John', :contact => { 'address' => "John's Home" }},
       { 'name' => 'Pearl', :contact => { 'address' => "Pearl's Home" }},
-      { 'name' => 'Catty' },
+      { 'name' => 'Catty', :contact => nil },
     ], User.where(name: %w[John Pearl Catty]).deep_pluck(:name, contact: :address)
   end
 

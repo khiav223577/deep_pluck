@@ -8,6 +8,7 @@ class DeepPluckHasAndBelongsToManyTest < Minitest::Test
     assert_equal [
       { zipcodes: [{ 'city' => 'Atlanta' }, { 'city'=>'Union City' }] },
       { zipcodes: [{ 'city' => 'Minneapolis' }, { 'city'=>'Edina' }] },
+      { zipcodes: [] },
     ], County.deep_pluck(zipcodes: :city)
   end
 

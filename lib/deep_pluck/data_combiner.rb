@@ -12,14 +12,23 @@ module DeepPluck
       private
 
       def make_data_hash(collection, parent, primary_key, column_name)
-        return parent.map{|s| [s[primary_key], s] }.to_h if !collection
         hash = {}
-        parent.each do |model_hash|
-          key = model_hash[primary_key]
-          array = (hash[key] ? hash[key][column_name] : []) # share the children if id is duplicated
-          model_hash[column_name] = array
-          hash[key] = model_hash
+
+        if collection
+          parent.each do |model_hash|
+            key = model_hash[primary_key]
+            array = (hash[key] ? hash[key][column_name] : []) # share the children if id is duplicated
+            model_hash[column_name] = array # set the value of this association key to empty array by default
+            hash[key] = model_hash
+          end
+        else
+          parent.each do |model_hash|
+            key = model_hash[primary_key]
+            model_hash[column_name] ||= nil # set the value of this association key to be nil by default
+            hash[key] = model_hash
+          end
         end
+
         return hash
       end
 

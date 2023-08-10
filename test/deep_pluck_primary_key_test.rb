@@ -15,7 +15,7 @@ class DeepPluckPrimaryKeyTest < Minitest::Test
   def test_primary_species
     assert_equal [
       { 'name' => 'John', 'primary_species' => { 'name' => 'Bat' }},
-      { 'name' => 'Pearl' },
+      { 'name' => 'Pearl', 'primary_species' => nil },
       { 'name' => 'Doggy', 'primary_species' => { 'name' => 'Rat' }},
     ], User.where(name: %w[John Pearl Doggy]).deep_pluck(:name, 'primary_species' => :name)
   end
