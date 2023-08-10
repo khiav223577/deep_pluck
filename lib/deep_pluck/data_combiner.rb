@@ -33,10 +33,12 @@ module DeepPluck
       end
 
       def assign_values_to_parent(collection, parent, children_hash, column_name, foreign_key, reverse: false)
-        parent.each do |s|
-          next if (id = s[foreign_key]) == nil
-          left = reverse ? children_hash[id] : s
-          right = !reverse ? children_hash[id] : s
+        parent.each do |data|
+          id = data[foreign_key]
+
+          left = reverse ? children_hash[id] : data
+          right = !reverse ? children_hash[id] : data
+
           if collection
             left[column_name] << right
           else
