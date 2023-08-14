@@ -1,5 +1,17 @@
 ## Change Log
 
+### [v1.3.0](https://github.com/khiav223577/deep_pluck/compare/v1.2.1...v1.3.0) 2023/08/10
+- [#58](https://github.com/khiav223577/deep_pluck/pull/58) add frozen_string_literal (@khiav223577)
+- [#57](https://github.com/khiav223577/deep_pluck/pull/57) Always show the association key even if there is no data (@khiav223577)
+
+### [v1.2.1](https://github.com/khiav223577/deep_pluck/compare/v1.2.0...v1.2.1) 2023/08/06
+- [#56](https://github.com/khiav223577/deep_pluck/pull/56) Fix: deep_pluck at has_many association with primary_key options will fail (@khiav223577)
+- [#55](https://github.com/khiav223577/deep_pluck/pull/55) Drop the support of ruby 2.2 (@khiav223577)
+- [#54](https://github.com/khiav223577/deep_pluck/pull/54) Refactor: use gem to setup autoload paths in tests (@khiav223577)
+- [#53](https://github.com/khiav223577/deep_pluck/pull/53) Support Rails 7.0 (@khiav223577)
+- [#52](https://github.com/khiav223577/deep_pluck/pull/52) Support Ruby 3.1 (@khiav223577)
+- [#51](https://github.com/khiav223577/deep_pluck/pull/51) Support Ruby 3.0 (@khiav223577)
+
 ### [v1.2.0](https://github.com/khiav223577/deep_pluck/compare/v1.1.7...v1.2.0) 2021/06/10
 - [#50](https://github.com/khiav223577/deep_pluck/pull/50) Support `globalize` gem (@khiav223577)
 
@@ -73,6 +85,4 @@
 
 ### [v0.0.2](https://github.com/khiav223577/deep_pluck/compare/v0.0.1...v0.0.2) 2017/03/06
 - [#2](https://github.com/khiav223577/deep_pluck/pull/2) The result of has_one association should not be array (@khiav223577)
-
-### v0.0.1 2017/03/04
 - [#1](https://github.com/khiav223577/deep_pluck/pull/1) Implement deep_pluck (@khiav223577)
