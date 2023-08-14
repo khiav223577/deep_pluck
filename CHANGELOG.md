@@ -85,4 +85,6 @@
 
 ### [v0.0.2](https://github.com/khiav223577/deep_pluck/compare/v0.0.1...v0.0.2) 2017/03/06
 - [#2](https://github.com/khiav223577/deep_pluck/pull/2) The result of has_one association should not be array (@khiav223577)
+
+### v0.0.1 2017/03/04
 - [#1](https://github.com/khiav223577/deep_pluck/pull/1) Implement deep_pluck (@khiav223577)
