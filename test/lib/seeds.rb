@@ -117,7 +117,7 @@ schools = School.create([
 
 users = User.create([
   { name: 'John', email: 'john@example.com', gender: 'male', school: schools[0], species_taxid: '1' },
-  { name: 'Pearl', email: 'pearl@example.com', gender: 'female', serialized_attribute: { testing: true, deep: { deep: :deep }}},
+  { name: 'Pearl', email: 'pearl@example.com', gender: 'female', species_taxid: '1', serialized_attribute: { testing: true, deep: { deep: :deep }}},
   { name: 'Doggy', email: 'kathenrie@example.com', gender: 'female', species_taxid: '2' },
   { name: 'Catty', email: 'catherine@example.com', gender: 'female' },
 ])
