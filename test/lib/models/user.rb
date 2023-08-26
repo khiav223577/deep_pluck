@@ -26,8 +26,8 @@ class User < ActiveRecord::Base
   has_many :species, foreign_key: :taxid, primary_key: :species_taxid
 
   if Gem::Version.new(ActiveRecord::VERSION::STRING) < Gem::Version.new('4.0.0')
-    has_one :primary_species, conditions: ['"primary" = ?', true], foreign_key: :taxid, primary_key: :species_taxid, class_name: 'Species'
+    belongs_to :primary_species, conditions: ['"primary" = ?', true], foreign_key: :species_taxid, primary_key: :taxid, class_name: 'Species'
   else
-    has_one :primary_species, ->{ where(primary: true) }, foreign_key: :taxid, primary_key: :species_taxid, class_name: 'Species'
+    belongs_to :primary_species, ->{ where(primary: true) }, foreign_key: :species_taxid, primary_key: :taxid, class_name: 'Species'
   end
 end
