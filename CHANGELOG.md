@@ -1,6 +1,8 @@
 ## Change Log
 
-### [upcoming](https://github.com/khiav223577/deep_pluck/compare/v1.3.0...HEAD) 2023/12/24
+### [v1.3.1](https://github.com/khiav223577/deep_pluck/compare/v1.3.0...v1.3.1) 2023/12/24
+- [#64](https://github.com/khiav223577/deep_pluck/pull/64) Support Rails 7.1 (@khiav223577)
+- [#63](https://github.com/khiav223577/deep_pluck/pull/63) Deal with the parameter handling which was changed in Rails 7.0.6 (@khiav223577)
 - [#61](https://github.com/khiav223577/deep_pluck/pull/61) Skip the step of publishing code coverage for the PR from forked repos (@khiav223577)
 - [#59](https://github.com/khiav223577/deep_pluck/pull/59) Fix: missing data caused by wrong association definition in test cases (@khiav223577)
 
