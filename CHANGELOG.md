@@ -1,5 +1,9 @@
 ## Change Log
 
+### [upcoming](https://github.com/khiav223577/deep_pluck/compare/v1.3.0...HEAD) 2023/12/24
+- [#61](https://github.com/khiav223577/deep_pluck/pull/61) Skip the step of publishing code coverage for the PR from forked repos (@khiav223577)
+- [#59](https://github.com/khiav223577/deep_pluck/pull/59) Fix: missing data caused by wrong association definition in test cases (@khiav223577)
+
 ### [v1.3.0](https://github.com/khiav223577/deep_pluck/compare/v1.2.1...v1.3.0) 2023/08/10
 - [#58](https://github.com/khiav223577/deep_pluck/pull/58) add frozen_string_literal (@khiav223577)
 - [#57](https://github.com/khiav223577/deep_pluck/pull/57) Always show the association key even if there is no data (@khiav223577)
