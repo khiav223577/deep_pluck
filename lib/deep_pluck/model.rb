@@ -70,7 +70,8 @@ module DeepPluck
     end
 
     def get_association_scope(reflect)
-      RailsCompatibility.unscope_where(reflect.association_class.new({}, reflect).send(:association_scope))
+      owner = reflect.association_class.new(reflect.active_record.new, reflect)
+      return RailsCompatibility.unscope_where(owner.send(:association_scope))
     end
 
     def use_association_to_query?(reflect)
