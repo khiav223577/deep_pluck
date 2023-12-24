@@ -8,7 +8,7 @@ gem 'pluck_all', '~> 2.3.4'
 
 group :test do
   gem 'simplecov', '< 0.18'
-  gem 'sqlite3', '~> 1.4.1'
+  gem 'sqlite3', '~> 1.6.2'
 end
 
 gemspec path: '../'
