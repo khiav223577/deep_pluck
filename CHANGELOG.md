@@ -1,5 +1,8 @@
 ## Change Log
 
+### [v1.3.2](https://github.com/khiav223577/deep_pluck/compare/v1.3.1...v1.3.2) 2024/09/09
+- [#66](https://github.com/khiav223577/deep_pluck/pull/66) Support Ruby 3.2 and Rails 7.2 (@khiav223577)
+
 ### [v1.3.1](https://github.com/khiav223577/deep_pluck/compare/v1.3.0...v1.3.1) 2023/12/24
 - [#64](https://github.com/khiav223577/deep_pluck/pull/64) Support Rails 7.1 (@khiav223577)
 - [#63](https://github.com/khiav223577/deep_pluck/pull/63) Deal with the parameter handling which was changed in Rails 7.0.6 (@khiav223577)
